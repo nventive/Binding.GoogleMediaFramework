@@ -1,0 +1,8 @@
+﻿https://github.com/googleads/google-media-framework-android
+
+Modified .AAR is used, can be found under Umbrella/Project in Source control. 
+
+IMA SDK and Exoplayer jars are both integrated into the Library - used for ImaPlayer.java 
+
+https://github.com/google/ExoPlayer
+https://developers.google.com/interactive-media-ads/docs/sdks/android/quickstart

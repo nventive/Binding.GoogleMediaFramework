@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>GoogleMediaFramework</id>
+		<version>0.2.0</version>
+		<title>Xamarin Binding for Google Media Framework</title>
+		<authors>nventive</authors>
+		<owners />
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android)</description>
+		<dependencies>		
+			<group targetFramework="MonoAndroid">
+				<dependency id="Xamarin.GooglePlayServices.Ads" version="25.0.0.0"  />
+				<dependency id="Xamarin.GooglePlayServices.Analytics" version="25.0.0.0"  />
+			</group>
+		</dependencies>		
+		<references>
+			<reference file="GoogleMediaFramework.dll" />
+		</references>
+	</metadata>
+	<files>
+		<!-- Android -->
+		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.dll" target="lib\MonoAndroid" />
+		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.pdb" target="lib\MonoAndroid" />
+	</files>
+</package>
