@@ -199,6 +199,10 @@ public class SimpleVideoPlayer {
     return playbackControlLayer.isFullscreen();
   }
 
+  public void setIsFullscreenToggleVisible(boolean shouldShowFullscreen) {
+    playbackControlLayer.setIsFullscreenToggleVisible(shouldShowFullscreen);
+  }
+
   /**
    * Make the player enter or leave fullscreen mode.
    * @param shouldBeFullscreen If true, the player is put into fullscreen mode. If false, the player

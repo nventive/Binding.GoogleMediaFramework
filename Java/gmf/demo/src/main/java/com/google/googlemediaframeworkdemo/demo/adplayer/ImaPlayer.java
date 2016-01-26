@@ -17,9 +17,11 @@
 package com.google.googlemediaframeworkdemo.demo.adplayer;
 
 import android.app.Activity;
+import android.app.Application;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,7 @@ import com.google.android.libraries.mediaframework.layeredvideo.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The ImaPlayer is responsible for displaying both videos and ads. This is accomplished using two
@@ -365,9 +368,11 @@ public class ImaPlayer {
     if (adTagUrl != null) {
       this.adTagUrl = Uri.parse(adTagUrl);
     }
-
+    registerActivityCallback();
     sdkSettings.setPlayerType(PLAYER_TYPE);
     sdkSettings.setPlayerVersion(PLAYER_VERSION);
+      sdkSettings.setLanguage(Locale.getDefault().getLanguage());
+
     adsLoader = ImaSdkFactory.getInstance().createAdsLoader(activity, sdkSettings);
     adListener = new AdListener();
     adsLoader.addAdErrorListener(adListener);
@@ -472,11 +477,11 @@ public class ImaPlayer {
                    FrameLayout container,
                    Video video) {
     this(activity,
-        container,
-        video,
-        "",
-        ImaSdkFactory.getInstance().createImaSdkSettings(),
-        null);
+            container,
+            video,
+            "",
+            ImaSdkFactory.getInstance().createImaSdkSettings(),
+            null);
   }
 
   /**
@@ -489,6 +494,15 @@ public class ImaPlayer {
     contentPlayer.pause();
   }
 
+    public void resume() {
+        if (adPlayer != null) {
+            adPlayer.play();
+        } else {
+            contentPlayer.play();
+        }
+
+    }
+
   /**
    * Resume video playback.
    */
@@ -499,6 +513,51 @@ public class ImaPlayer {
       contentPlayer.play();
     }
   }
+
+    private void registerActivityCallback() {
+        if (this.activity != null) {
+            Application app = this.activity.getApplication();
+            if (app != null) {
+                app.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                    @Override
+                    public void onActivityCreated(Activity activity, Bundle bundle) {
+                        //Do nothing.
+                    }
+
+                    @Override
+                    public void onActivityStarted(Activity activity) {
+                        //Do nothing.
+                    }
+
+                    @Override
+                    public void onActivityResumed(Activity activity) {
+                        resume();
+                    }
+
+                    @Override
+                    public void onActivityPaused(Activity activity) {
+                        pause();
+                    }
+
+                    @Override
+                    public void onActivityStopped(Activity activity) {
+                        //Do nothing.
+                    }
+
+                    @Override
+                    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+                        //Do nothing.
+                    }
+
+                    @Override
+                    public void onActivityDestroyed(Activity activity) {
+                        //Do nothing.
+                    }
+                });
+
+            }
+        }
+    }
 
   /**
    * Set the logo with appears in the left of the top chrome.
@@ -523,7 +582,7 @@ public class ImaPlayer {
    *              (ex. {@link android.graphics.Color#RED}).
    */
   public void setPlaybackControlColor(int color) {
-    contentPlayer.setPlaybackControlColor(color);
+    contentPlayer.setSeekbarColor(color);
   }
 
   /**
@@ -550,29 +609,30 @@ public class ImaPlayer {
    */
   public void setFullscreenCallback(
       final PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
-    this.fullscreenCallback = new PlaybackControlLayer.FullscreenCallback() {
-      @Override
-      public void onGoToFullscreen() {
-        fullscreenCallback.onGoToFullscreen();
-        container.setLayoutParams(Util.getLayoutParamsBasedOnParent(
-            container,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-      }
+          this.fullscreenCallback = new PlaybackControlLayer.FullscreenCallback() {
+              @Override
+              public void onGoToFullscreen() {
+                  fullscreenCallback.onGoToFullscreen();
+                  container.setLayoutParams(Util.getLayoutParamsBasedOnParent(
+                          container,
+                          ViewGroup.LayoutParams.MATCH_PARENT,
+                          ViewGroup.LayoutParams.MATCH_PARENT
+                  ));
+              }
 
-      @Override
-      public void onReturnFromFullscreen() {
-        fullscreenCallback.onReturnFromFullscreen();
-        container.setLayoutParams(originalContainerLayoutParams);
-      }
-    };
+              @Override
+              public void onReturnFromFullscreen() {
+                  fullscreenCallback.onReturnFromFullscreen();
+                  container.setLayoutParams(originalContainerLayoutParams);
+              }
+          };
 
-    if (adPlayer != null) {
-      adPlayer.setFullscreenCallback(fullscreenCallback);
-    } else {
-      contentPlayer.setFullscreenCallback(fullscreenCallback);
-    }
+
+      if (adPlayer != null) {
+          adPlayer.setFullscreenCallback(fullscreenCallback);
+      } else {
+          contentPlayer.setFullscreenCallback(fullscreenCallback);
+      }
   }
 
   /**
@@ -580,12 +640,14 @@ public class ImaPlayer {
    */
   public void release() {
     if (adPlayer != null) {
+
       adPlayer.release();
       adPlayer = null;
     }
     if (adsManager != null) {
-      adsManager.destroy();
+        adsManager.destroy();
       adsManager = null;
+
     }
     adsLoader.contentComplete();
     contentPlayer.release();
@@ -629,7 +691,8 @@ public class ImaPlayer {
     adPlayer.moveSurfaceToForeground();
     adPlayer.play();
     adPlayer.disableSeeking();
-    adPlayer.setSeekbarColor(Color.YELLOW);
+      adPlayer.setSeekbarColor(Color.YELLOW);
+      adPlayer.setTextColor(Color.YELLOW);
     adPlayer.hideTopChrome();
     adPlayer.setFullscreen(contentPlayer.isFullscreen());
 
@@ -704,6 +767,7 @@ public class ImaPlayer {
     AdDisplayContainer adDisplayContainer = ImaSdkFactory.getInstance().createAdDisplayContainer();
     adDisplayContainer.setPlayer(videoAdPlayer);
     adDisplayContainer.setAdContainer(adUiContainer);
+
     AdsRequest request = ImaSdkFactory.getInstance().createAdsRequest();
     request.setAdTagUrl(tagUrl);
 

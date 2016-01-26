@@ -24,6 +24,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
@@ -290,6 +291,10 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private boolean isFullscreen;
 
+  private boolean showFullscreenToggle;
+
+  private int originalOrientation;
+
   /**
    * Whether the seekbar is currently being dragged.
    */
@@ -388,7 +393,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   public PlaybackControlLayer(String videoTitle) {
     this(videoTitle, null);
   }
-
   public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback) {
     this.videoTitle = videoTitle;
     this.canSeek = true;
@@ -504,11 +508,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * hidden (or made visible) when this method is called.
    */
   public void doToggleFullscreen() {
-
-    // If there is no callback for handling fullscreen, don't do anything.
-    if (fullscreenCallback == null) {
-      return;
-    }
     PlayerControl playerControl = getLayerManager().getControl();
     if (playerControl == null) {
       return;
@@ -518,8 +517,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     FrameLayout container = getLayerManager().getContainer();
 
     if (isFullscreen) {
-      fullscreenCallback.onReturnFromFullscreen();
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+      if (fullscreenCallback != null) {
+        fullscreenCallback.onReturnFromFullscreen();
+      }
 
       // Make the status bar and navigation bar visible again.
       activity.getWindow().getDecorView().setSystemUiVisibility(0);
@@ -530,32 +530,15 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
 
       isFullscreen = false;
     } else {
-      fullscreenCallback.onGoToFullscreen();
+      if (fullscreenCallback != null) {
+        fullscreenCallback.onGoToFullscreen();
+      }
       activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-      activity.getWindow().getDecorView().setSystemUiVisibility(
-          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
-
-      // Whenever the status bar and navigation bar appear, we want the playback controls to
-      // appear as well.
-      activity.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
-          new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int i) {
-              // By doing a logical AND, we check if the fullscreen option is triggered (i.e. the
-              // status bar is hidden). If the result of the logical AND is 0, that means that the
-              // fullscreen flag is NOT triggered. This means that the status bar is showing. If
-              // this is the case, then we show the playback controls as well (by calling show()).
-              if ((i & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                show();
-              }
-            }
-          }
-      );
+      activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
       container.setLayoutParams(Util.getLayoutParamsBasedOnParent(container,
-          ViewGroup.LayoutParams.MATCH_PARENT,
-          ViewGroup.LayoutParams.MATCH_PARENT));
+              ViewGroup.LayoutParams.MATCH_PARENT,
+              ViewGroup.LayoutParams.MATCH_PARENT));
 
       fullscreenButton.setImageResource(R.drawable.ic_action_return_from_full_screen);
 
@@ -601,7 +584,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
           .setDuration(FADE_OUT_DURATION_MS)
           .setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {}
+            public void onAnimationStart(Animator animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -612,18 +596,19 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
               // Make sure that the status bar and navigation bar are hidden when the playback
               // controls are hidden.
               if (isFullscreen) {
-                getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
               }
               handler.removeMessages(SHOW_PROGRESS);
               isVisible = false;
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {}
+            public void onAnimationCancel(Animator animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {}
+            public void onAnimationRepeat(Animator animation) {
+            }
           });
     }
   }
@@ -706,6 +691,13 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     }
   }
 
+  public void setIsFullscreenToggleVisible(boolean shouldShowFullscreen) {
+    this.showFullscreenToggle = shouldShowFullscreen;
+    if (this.showFullscreenToggle && fullscreenButton != null) {
+      fullscreenButton.setVisibility(View.INVISIBLE);
+    }
+  }
+
   @Override
   public void onLayerDisplayed(LayerManager layerManager) {}
 
@@ -781,10 +773,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   public void setFullscreenCallback(FullscreenCallback fullscreenCallback) {
     this.fullscreenCallback = fullscreenCallback;
-    if (fullscreenButton != null && fullscreenCallback != null) {
-      fullscreenButton.setVisibility(View.VISIBLE);
-    } else if (fullscreenButton != null && fullscreenCallback == null) {
-      fullscreenButton.setVisibility(View.INVISIBLE);
+    if (fullscreenButton != null) {
+      fullscreenButton.setVisibility(showFullscreenToggle ? View.VISIBLE : View.INVISIBLE);
     }
   }
 
@@ -855,7 +845,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       }
     });
 
-    if (fullscreenCallback == null) {
+    if (!showFullscreenToggle) {
       fullscreenButton.setVisibility(View.INVISIBLE);
     }
     // Go into fullscreen when the fullscreen button is clicked.

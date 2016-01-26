@@ -826,6 +826,7 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
     }
   }
 
+
   @Override
   public void onCryptoError(CryptoException e) {
     if (internalErrorListener != null) {
@@ -900,6 +901,7 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
   public void onUpstreamDiscarded(int sourceId, long mediaStartTimeMs, long mediaEndTimeMs) {
     // Do nothing.
   }
+
 
   /**
    * If either playback state or the play when ready values have changed, notify all the playback

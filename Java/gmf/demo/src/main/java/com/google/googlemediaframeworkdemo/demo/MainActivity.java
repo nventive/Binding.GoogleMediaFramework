@@ -111,6 +111,7 @@ public class MainActivity extends Activity implements PlaybackControlLayer.Fulls
     super.onDestroy();
   }
 
+
   /**
    * When a video has been selected, create an {@link ImaPlayer} and play the video.
    */
@@ -131,7 +132,6 @@ public class MainActivity extends Activity implements PlaybackControlLayer.Fulls
         videoTitle,
         adTagUrl);
     imaPlayer.setFullscreenCallback(this);
-
     Resources res = getResources();
 
     // Customize the UI of the video player.
@@ -149,14 +149,14 @@ public class MainActivity extends Activity implements PlaybackControlLayer.Fulls
     // Uncomment the following lines to set the color of the buttons and seekbar in the player
     // to be a green color.
 
-    // int samplePlaybackControlColor = res.getColor(R.color.sample_playback_control_color);
-    // imaPlayer.setPlaybackControlColor(samplePlaybackControlColor);
+    int samplePlaybackControlColor = res.getColor(R.color.sample_playback_control_color);
+      imaPlayer.setPlaybackControlColor(samplePlaybackControlColor);
 
     // Add three buttons to the video player's set of action buttons.
     //
     // When the player is not fullscreen, there will be an overflow button in the top right of the
     // video player's playback control UI. When the overflow button is clicked, a dialog box
-    // will appear listing the possible actions (in this case, "Option 1", "Option 2",
+      // will appear listing the possible actions (in this case, "Option 1", "Option 2",
     // and "Option 3").
     //
     // When the player is in fullscreen, each of the buttons' icons (in this case, share, discard,

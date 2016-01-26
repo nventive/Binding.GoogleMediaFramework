@@ -59,7 +59,7 @@ public class WidevineTestMediaDrmCallback implements MediaDrmCallback {
 
   @Override
   public byte[] executeProvisionRequest(UUID uuid, ProvisionRequest request)
-      throws ClientProtocolException, IOException {
+      throws IOException {
     String url = request.getDefaultUrl() + "&signedRequest=" + new String(request.getData());
     return ExoplayerUtil.executePost(url, null, null);
   }
