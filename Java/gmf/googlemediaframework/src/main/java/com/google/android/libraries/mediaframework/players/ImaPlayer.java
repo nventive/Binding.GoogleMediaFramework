@@ -11,7 +11,7 @@
  limitations under the License.
  */
 
-package com.google.googlemediaframeworkdemo.demo.adplayer;
+package com.google.android.libraries.mediaframework.players;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -736,6 +736,11 @@ public class ImaPlayer {
         }
         if (adsManager != null) {
             adsManager = null;
+        }
+        if (this.activity != null) {
+            if (activity.getRequestedOrientation() != originalOrientation) {
+                activity.setRequestedOrientation(originalOrientation);
+            }
         }
         unregisterLifecycleCallback();
         adsLoader.contentComplete();
