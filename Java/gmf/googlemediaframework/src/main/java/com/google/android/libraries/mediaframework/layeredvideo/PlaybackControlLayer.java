@@ -533,7 +533,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       if (fullscreenCallback != null) {
         fullscreenCallback.onGoToFullscreen();
       }
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
       activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
       container.setLayoutParams(Util.getLayoutParamsBasedOnParent(container,
