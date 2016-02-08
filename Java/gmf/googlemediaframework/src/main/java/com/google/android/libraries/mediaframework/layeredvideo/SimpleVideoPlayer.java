@@ -61,6 +61,11 @@ public class SimpleVideoPlayer {
    */
   private final VideoSurfaceLayer videoSurfaceLayer;
 
+  private final LoadingLayer loadingLayer;
+
+  private final ErrorLayer errorLayer;
+
+  private boolean isError = false;
   /**
    * Set whether the video should play immediately.
    */
@@ -102,18 +107,21 @@ public class SimpleVideoPlayer {
     playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback);
     subtitleLayer = new SubtitleLayer();
     videoSurfaceLayer = new VideoSurfaceLayer(autoplay);
+    loadingLayer = new LoadingLayer();
+    errorLayer = new ErrorLayer();
     this.autoplay = autoplay;
 
     List<Layer> layers = new ArrayList<Layer>();
     layers.add(videoSurfaceLayer);
     layers.add(playbackControlLayer);
     layers.add(subtitleLayer);
+    layers.add(loadingLayer);
+    layers.add(errorLayer);
 
     layerManager = new LayerManager(activity,
         container,
         video,
         layers);
-
     layerManager.getExoplayerWrapper().setTextListener(subtitleLayer);
 
     if (startPostitionMs > 0) {
@@ -183,6 +191,24 @@ public class SimpleVideoPlayer {
   public void hide() {
     playbackControlLayer.hide();
     subtitleLayer.setVisibility(View.GONE);
+  }
+
+  public void showError() {
+    hide();
+    loadingLayer.setVisibility(View.INVISIBLE);
+    errorLayer.setVisibility(View.VISIBLE);
+    playbackControlLayer.showError();
+  }
+
+  public void setIsLoading(boolean isLoading) {
+    hide();
+    loadingLayer.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+  }
+
+  public void setLoadingColor(int color) {
+    if (loadingLayer != null) {
+      loadingLayer.setLoadingColor(color);
+    }
   }
 
   /**
@@ -336,8 +362,8 @@ public class SimpleVideoPlayer {
    * the screen.
    */
   public void show() {
-    playbackControlLayer.show();
-    subtitleLayer.setVisibility(View.VISIBLE);
+      playbackControlLayer.show();
+      subtitleLayer.setVisibility(View.VISIBLE);
   }
 
   /**

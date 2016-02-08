@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -223,6 +224,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private boolean canSeek;
 
+  private final int fullscreenUiFlags = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY  | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.KEEP_SCREEN_ON;
   /**
    * <p> Derived from the Color class (ex. {@link Color#RED}), the chrome consists of three
    * views, which are are tinted with the the chrome color.
@@ -522,7 +524,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       }
 
       // Make the status bar and navigation bar visible again.
-      activity.getWindow().getDecorView().setSystemUiVisibility(0);
+      activity.getWindow().clearFlags(fullscreenUiFlags);
 
       container.setLayoutParams(originalContainerLayoutParams);
 
@@ -534,7 +536,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         fullscreenCallback.onGoToFullscreen();
       }
       activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-      activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+      activity.getWindow().addFlags(fullscreenUiFlags);
 
       container.setLayoutParams(Util.getLayoutParamsBasedOnParent(container,
               ViewGroup.LayoutParams.MATCH_PARENT,
@@ -596,7 +598,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
               // Make sure that the status bar and navigation bar are hidden when the playback
               // controls are hidden.
               if (isFullscreen) {
-                getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                getLayerManager().getActivity().getWindow().addFlags(fullscreenUiFlags);
               }
               handler.removeMessages(SHOW_PROGRESS);
               isVisible = false;
@@ -1079,10 +1081,19 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     return position;
   }
 
+  public void setVisibility(int visibility) {
+    this.view.setVisibility(visibility);
+  }
   /**
    * Set play callback
    */
   public void setPlayCallback(PlayCallback playCallback) {
     this.playCallback = playCallback;
   }
+
+  public void showError()
+  {
+    getLayerManager().getContainer().setOnClickListener(null);
+  }
+
 }

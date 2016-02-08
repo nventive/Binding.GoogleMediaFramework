@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.ads.interactivemedia.v3.api.AdDisplayContainer;
+import com.google.ads.interactivemedia.v3.api.AdError;
 import com.google.ads.interactivemedia.v3.api.AdErrorEvent;
 import com.google.ads.interactivemedia.v3.api.AdEvent;
 import com.google.ads.interactivemedia.v3.api.AdsLoader;
@@ -42,6 +43,8 @@ import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.libraries.mediaframework.exoplayerextensions.ExoplayerWrapper;
 import com.google.android.libraries.mediaframework.exoplayerextensions.Video;
+import com.google.android.libraries.mediaframework.layeredvideo.ErrorLayer;
+import com.google.android.libraries.mediaframework.layeredvideo.Layer;
 import com.google.android.libraries.mediaframework.layeredvideo.PlaybackControlLayer;
 import com.google.android.libraries.mediaframework.layeredvideo.SimpleVideoPlayer;
 import com.google.android.libraries.mediaframework.layeredvideo.Util;
@@ -56,8 +59,14 @@ import java.util.Locale;
  * video player is overlaid on the content video player. When the ad is complete, the ad video
  * player is destroyed and the content video player is displayed again.
  */
+
 public class ImaPlayer {
 
+    private enum PlayerType {
+        CONTENT_PLAYER,
+        AD_PLAYER,
+        UNKNOWN
+    }
     private static String PLAYER_TYPE = "google/gmf-android";
     private static String PLAYER_VERSION = "0.2.0";
 
@@ -121,9 +130,17 @@ public class ImaPlayer {
     private FrameLayout container;
 
     /**
+     * Flag to let the player know that we are in an error state. Used to avoid erroneous actions
+     * performed from potential pending ad requests.
+     */
+    private boolean isError;
+
+    /**
      * Plays the content (i.e. the actual video).
      */
     private SimpleVideoPlayer contentPlayer;
+
+    private PlayerType activePlayer;
 
     /**
      * The callback that is triggered when fullscreen mode is entered or closed.
@@ -164,6 +181,13 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
+            isError = true;
+            if (playbackListener != null) {
+                playbackListener.onError(e);
+            }
+
+            removeAdPlayer();
+            contentPlayer.showError();
         }
 
         /**
@@ -173,6 +197,13 @@ public class ImaPlayer {
          */
         @Override
         public void onStateChanged(boolean playWhenReady, int playbackState) {
+            if (adPlayer != null && activePlayer == PlayerType.AD_PLAYER) {
+                if (playbackState == ExoPlayer.STATE_PREPARING || playbackState == ExoPlayer.STATE_BUFFERING) {
+                    adPlayer.setIsLoading(true);
+                } else {
+                    adPlayer.setIsLoading(false);
+                }
+            }
             if (playbackState == ExoPlayer.STATE_ENDED) {
                 for (VideoAdPlayer.VideoAdPlayerCallback callback : callbacks) {
                     callback.onEnded();
@@ -199,6 +230,13 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
+            isError = true;
+            if(contentPlayer != null) {
+                contentPlayer.showError();
+            }
+            if (playbackListener != null) {
+                playbackListener.onError(e);
+            }
         }
 
         /**
@@ -208,6 +246,13 @@ public class ImaPlayer {
          */
         @Override
         public void onStateChanged(boolean playWhenReady, int playbackState) {
+            if (contentPlayer != null && activePlayer == PlayerType.CONTENT_PLAYER) {
+                if (playbackState == ExoPlayer.STATE_PREPARING || playbackState == ExoPlayer.STATE_BUFFERING) {
+                    contentPlayer.setIsLoading(true);
+                } else {
+                    contentPlayer.setIsLoading(false);
+                }
+            }
             if (playbackState == ExoPlayer.STATE_ENDED) {
                 adsLoader.contentComplete();
             }
@@ -237,23 +282,29 @@ public class ImaPlayer {
         public void onAdError(AdErrorEvent adErrorEvent) {
             // If there is an error in ad playback, log the error and resume the content.
             Log.d(this.getClass().getSimpleName(), adErrorEvent.getError().getMessage());
-            resumeContent();
+
+            //If we receive an empty response then assume that we should only be playing the content
+            if (adErrorEvent.getError().getErrorCode() == AdError.AdErrorCode.VAST_EMPTY_RESPONSE) {
+                resumeContent();
+            }
         }
 
         @Override
         public void onAdEvent(AdEvent event) {
-            switch (event.getType()) {
-                case LOADED:
-                    adsManager.start();
-                    break;
-                case CONTENT_PAUSE_REQUESTED:
-                    pauseContent();
-                    break;
-                case CONTENT_RESUME_REQUESTED:
-                    resumeContent();
-                    break;
-                default:
-                    break;
+            if (!isError) {
+                switch (event.getType()) {
+                    case LOADED:
+                        adsManager.start();
+                        break;
+                    case CONTENT_PAUSE_REQUESTED:
+                        pauseContent();
+                        break;
+                    case CONTENT_RESUME_REQUESTED:
+                        resumeContent();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -404,6 +455,7 @@ public class ImaPlayer {
                 handlePlay();
             }
         });
+        contentPlayer.setIsLoading(true);
 
         // Move the content player's surface layer to the background so that the ad player's surface
         // layer can be overlaid on top of it during ad playback.
@@ -534,8 +586,10 @@ public class ImaPlayer {
      */
     public void play() {
         if (adTagUrl != null) {
+            activePlayer = PlayerType.AD_PLAYER;
             requestAd();
         } else {
+            activePlayer = PlayerType.CONTENT_PLAYER;
             contentPlayer.play();
         }
     }
@@ -545,8 +599,10 @@ public class ImaPlayer {
      */
     public void resume() {
         if (adPlayer != null) {
+            activePlayer = PlayerType.AD_PLAYER;
             adPlayer.play();
         } else {
+            activePlayer = PlayerType.CONTENT_PLAYER;
             contentPlayer.play();
         }
     }
@@ -638,13 +694,27 @@ public class ImaPlayer {
 
 
     /**
-     * Sets the color of the and seek bar.
+     * Sets the color of the seek bar.
      * @param color a color derived from the @{link Color} class
      *              (ex. {@link android.graphics.Color#RED}).
      */
     public void setSeekbarColor(int color) {
         contentPlayer.setSeekbarColor(color);
     }
+
+    /**
+     * Sets the color of the and progress bar.
+     * @param color a color derived from the @{link Color} class
+     *              (ex. {@link android.graphics.Color#RED}).
+     */
+    public void setLoadingColor(int color) {
+        contentPlayer.setLoadingColor(color);
+        if (adPlayer != null) {
+            adPlayer.setLoadingColor(color);
+        }
+    }
+
+
 
     /**
      * Creates a button to put in the top right of the video player.
@@ -689,7 +759,6 @@ public class ImaPlayer {
                 @Override
                 public void onGoToFullscreen() {
                     fullscreenCallback.onGoToFullscreen();
-
                     container.setLayoutParams(Util.getLayoutParamsBasedOnParent(
                             container,
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -737,6 +806,11 @@ public class ImaPlayer {
         if (adsManager != null) {
             adsManager = null;
         }
+        if (this.activity != null) {
+            if (activity.getRequestedOrientation() != originalOrientation) {
+                activity.setRequestedOrientation(originalOrientation);
+            }
+        }
         unregisterLifecycleCallback();
         adsLoader.contentComplete();
         contentPlayer.release();
@@ -774,7 +848,7 @@ public class ImaPlayer {
                 fullscreenCallback);
 
         adPlayer.addPlaybackListener(adPlaybackListener);
-
+        activePlayer = PlayerType.AD_PLAYER;
         // Move the ad player's surface layer to the foreground so that it is overlaid on the content
         // player's surface layer (which is in the background).
         adPlayer.moveSurfaceToForeground();
@@ -810,6 +884,22 @@ public class ImaPlayer {
         setFullscreenCallback(fullscreenCallback);
     }
 
+    private void removeAdPlayer() {
+        activePlayer = PlayerType.CONTENT_PLAYER;
+        adTagUrl = null;
+        adsShown = true;
+        destroyAdPlayer();
+        if (adsLoader != null) {
+            adsLoader.contentComplete();
+            adsLoader.removeAdsLoadedListener(adListener);
+            adsLoader.removeAdErrorListener(adListener);
+        }
+        if (adsManager != null) {
+            adsManager.destroy();
+            adsManager = null;
+        }
+    }
+
     /**
      * Pause and hide the content player.
      */
@@ -822,6 +912,7 @@ public class ImaPlayer {
      * Show the content player and start playing again.
      */
     private void showContentPlayer(){
+        activePlayer = PlayerType.CONTENT_PLAYER;
         contentPlayer.show();
         contentPlayer.play();
     }
@@ -859,7 +950,6 @@ public class ImaPlayer {
         AdsRequest request = ImaSdkFactory.getInstance().createAdsRequest();
         request.setAdTagUrl(tagUrl);
 
-
         request.setAdDisplayContainer(adDisplayContainer);
         return request;
     }
@@ -877,6 +967,7 @@ public class ImaPlayer {
      */
     private void handlePlay() {
         if (!adsShown && adTagUrl != null) {
+            activePlayer = PlayerType.AD_PLAYER;
             contentPlayer.pause();
             requestAd();
             adsShown = true;

@@ -34,7 +34,7 @@ public class VideoSurfaceLayer implements Layer {
   private boolean autoplay;
 
   /**
-   * The {@link LayerManager} whcih is responsible for creating this layer's view and adding it to
+   * The {@link LayerManager} which is responsible for creating this layer's view and adding it to
    * the video player.
    */
   private LayerManager layerManager;
