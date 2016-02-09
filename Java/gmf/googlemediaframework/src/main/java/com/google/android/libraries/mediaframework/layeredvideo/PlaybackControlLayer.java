@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -225,6 +226,16 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private boolean canSeek;
 
   private final int fullscreenUiFlags = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY  | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.KEEP_SCREEN_ON;
+  /**
+   * The System UI Flags that are used to enter into a fullscreen immersive mode
+   */
+  private final int fullscreenUiFlags =
+          View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                  | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                  | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                  | View.SYSTEM_UI_FLAG_FULLSCREEN
+                  | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
   /**
    * <p> Derived from the Color class (ex. {@link Color#RED}), the chrome consists of three
    * views, which are are tinted with the the chrome color.
@@ -523,8 +534,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         fullscreenCallback.onReturnFromFullscreen();
       }
 
-      // Make the status bar and navigation bar visible again.
-      activity.getWindow().clearFlags(fullscreenUiFlags);
+      // Make the status bar and navigation bar visible again, no longer force the screen to stay on.
+      activity.getWindow().getDecorView().setSystemUiVisibility(0);
+      activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
       container.setLayoutParams(originalContainerLayoutParams);
 
@@ -536,7 +548,29 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         fullscreenCallback.onGoToFullscreen();
       }
       activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-      activity.getWindow().addFlags(fullscreenUiFlags);
+
+      //Ensure the activity is not currently forcing the window into not fullscreen
+      activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+      activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+      final View decorView = activity.getWindow().getDecorView();
+      decorView.setSystemUiVisibility(fullscreenUiFlags);
+
+      // Whenever the status bar and navigation bar appear, we want the playback controls to
+      // appear as well.
+      decorView.setOnSystemUiVisibilityChangeListener(
+              new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int i) {
+                  //This check will allow us to put back the fullscreen flags if the status bar has
+                  //reappeared due to a navigation (such as navigating to and from the ad website)
+                  if ((i & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    show();
+                    decorView.setSystemUiVisibility(fullscreenUiFlags);
+                  }
+                }
+              }
+      );
 
       container.setLayoutParams(Util.getLayoutParamsBasedOnParent(container,
               ViewGroup.LayoutParams.MATCH_PARENT,
@@ -598,7 +632,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
               // Make sure that the status bar and navigation bar are hidden when the playback
               // controls are hidden.
               if (isFullscreen) {
-                getLayerManager().getActivity().getWindow().addFlags(fullscreenUiFlags);
+                getLayerManager().getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                getLayerManager().getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                getLayerManager().getActivity().getWindow().getDecorView().setSystemUiVisibility(fullscreenUiFlags);
               }
               handler.removeMessages(SHOW_PROGRESS);
               isVisible = false;
