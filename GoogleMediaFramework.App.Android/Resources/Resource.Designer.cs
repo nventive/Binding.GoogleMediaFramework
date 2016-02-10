@@ -23,7 +23,6 @@ namespace GoogleMediaFramework.App.Android
 		{
 			global::Android.Runtime.ResourceIdManager.UpdateIdValues();
 		}
-
 		
 		public static void UpdateIdValues()
 		{

@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -225,7 +226,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private boolean canSeek;
 
-  private final int fullscreenUiFlags = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY  | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.KEEP_SCREEN_ON;
   /**
    * The System UI Flags that are used to enter into a fullscreen immersive mode
    */
@@ -528,6 +528,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
 
     Activity activity = getLayerManager().getActivity();
     FrameLayout container = getLayerManager().getContainer();
+    final View decorView = activity.getWindow().getDecorView();
 
     if (isFullscreen) {
       if (fullscreenCallback != null) {
@@ -535,6 +536,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       }
 
       // Make the status bar and navigation bar visible again, no longer force the screen to stay on.
+      decorView.setOnSystemUiVisibilityChangeListener(null);
       activity.getWindow().getDecorView().setSystemUiVisibility(0);
       activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -552,8 +554,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       //Ensure the activity is not currently forcing the window into not fullscreen
       activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
       activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-      final View decorView = activity.getWindow().getDecorView();
       decorView.setSystemUiVisibility(fullscreenUiFlags);
 
       // Whenever the status bar and navigation bar appear, we want the playback controls to
@@ -566,7 +566,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
                   //reappeared due to a navigation (such as navigating to and from the ad website)
                   if ((i & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
                     show();
-                    decorView.setSystemUiVisibility(fullscreenUiFlags);
                   }
                 }
               }
