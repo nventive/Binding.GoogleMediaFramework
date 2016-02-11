@@ -126,10 +126,11 @@ public class LayerManager {
    * When the video player is no longer needed, call this method.
    */
   public void release() {
-    container.removeAllViews();
-    if (exoplayerWrapper != null) {
-      exoplayerWrapper.release();
-      exoplayerWrapper = null;
-    }
+      container.removeAllViews();
+      container = null;
+      if (exoplayerWrapper != null) {
+          exoplayerWrapper.release();
+          exoplayerWrapper = null;
+      }
   }
 }

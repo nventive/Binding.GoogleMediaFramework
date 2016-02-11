@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.google.ads.interactivemedia.v3.api.AdDisplayContainer;
@@ -294,7 +295,9 @@ public class ImaPlayer {
             if (!isError) {
                 switch (event.getType()) {
                     case LOADED:
-                        adsManager.start();
+                        if (adsManager != null) {
+                            adsManager.start();
+                        }
                         break;
                     case CONTENT_PAUSE_REQUESTED:
                         pauseContent();
@@ -799,17 +802,29 @@ public class ImaPlayer {
      * When you are finished using this {@link ImaPlayer}, make sure to call this method.
      */
     public void release() {
+        if (videoAdPlayer != null) {
+            for (VideoAdPlayer.VideoAdPlayerCallback callback : callbacks) {
+                videoAdPlayer.removeCallback(callback);
+            }
+        }
         if (adPlayer != null) {
             adPlayer.release();
             adPlayer = null;
         }
+
         if (adsManager != null) {
+            adsManager.discardAdBreak();
+            adsManager.destroy();
             adsManager = null;
         }
         if (this.activity != null) {
             if (activity.getRequestedOrientation() != originalOrientation) {
                 activity.setRequestedOrientation(originalOrientation);
             }
+            activity.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(null);
+            activity.getWindow().getDecorView().setSystemUiVisibility(0);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         }
         unregisterLifecycleCallback();
         adsLoader.contentComplete();
