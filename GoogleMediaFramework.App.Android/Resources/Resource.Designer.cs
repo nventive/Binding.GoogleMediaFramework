@@ -19,7 +19,6 @@ namespace GoogleMediaFramework.App.Android
 	public partial class Resource
 	{
 		
-
 		static Resource()
 		{
 			global::Android.Runtime.ResourceIdManager.UpdateIdValues();

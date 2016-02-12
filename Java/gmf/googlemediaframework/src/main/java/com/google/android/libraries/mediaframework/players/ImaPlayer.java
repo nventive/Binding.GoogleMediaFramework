@@ -141,7 +141,21 @@ public class ImaPlayer {
      */
     private SimpleVideoPlayer contentPlayer;
 
+    /**
+     * Keeps track of the currently active video player (content or ad) in order to properly
+     * report which player is in a loading/error state
+     */
     private PlayerType activePlayer;
+
+    /**
+     * The color that will be set for the {@link SimpleVideoPlayer} progress bar
+     */
+    private int loadingColor;
+
+    /**
+     * The color that will be set for the {@link SimpleVideoPlayer} seekbar
+     */
+    private int seekBarColor;
 
     /**
      * The callback that is triggered when fullscreen mode is entered or closed.
@@ -702,7 +716,11 @@ public class ImaPlayer {
      *              (ex. {@link android.graphics.Color#RED}).
      */
     public void setSeekbarColor(int color) {
+        this.seekBarColor = color;
         contentPlayer.setSeekbarColor(color);
+        if (adPlayer != null) {
+            adPlayer.setSeekbarColor(color);
+        }
     }
 
     /**
@@ -711,6 +729,7 @@ public class ImaPlayer {
      *              (ex. {@link android.graphics.Color#RED}).
      */
     public void setLoadingColor(int color) {
+        this.loadingColor = color;
         contentPlayer.setLoadingColor(color);
         if (adPlayer != null) {
             adPlayer.setLoadingColor(color);
@@ -869,7 +888,8 @@ public class ImaPlayer {
         adPlayer.moveSurfaceToForeground();
         adPlayer.play();
         adPlayer.disableSeeking();
-        adPlayer.setSeekbarColor(Color.YELLOW);
+        adPlayer.setSeekbarColor(seekBarColor);
+        adPlayer.setLoadingColor(loadingColor);
         adPlayer.hideTopChrome();
         adPlayer.setFullscreen(contentPlayer.isFullscreen());
 
