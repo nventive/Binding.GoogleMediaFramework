@@ -7,7 +7,7 @@
 		<authors>nventive</authors>
 		<owners />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android)</description>
+		<description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android / https://github.com/googleads/google-media-framework-ios) </description>
 		<dependencies>		
 			<group targetFramework="MonoAndroid">
 				<dependency id="Xamarin.GooglePlayServices.Ads" version="25.0.0.0"  />
@@ -22,5 +22,8 @@
 		<!-- Android -->
 		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.dll" target="lib\MonoAndroid" />
 		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.pdb" target="lib\MonoAndroid" />
+		<!-- iOS -->
+		<file src="..\ObjC\GoogleMediaFramework.dll" target="lib\Xamarin.iOS10" />
+		<file src="..\ObjC\GoogleMediaFramework.pdb" target="lib\Xamarin.iOS10" />
 	</files>
 </package>
