@@ -139,7 +139,8 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
                                     GMFAudioRouteChangeListenerCallback,
                                     (__bridge void *)self);
 
-    // Handles interruptions to playback, like phone calls and activating Siri.
+      [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+      // Handles interruptions to playback, like phone calls and activating Siri.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onAudioSessionInterruption:)
                                                  name:AVAudioSessionInterruptionNotification
@@ -268,7 +269,7 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:AVPlayerItemDidPlayToEndTimeNotification
                                                 object:_playerItem];
-
+ 
   _playerItem = playerItem;
   if (_playerItem) {
     [_playerItem addObserver:self

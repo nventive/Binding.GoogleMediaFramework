@@ -20,19 +20,23 @@
 #import "GMFResources.h"
 #import "UILabel+GMFLabels.h"
 #import "UIButton+GMFTintableButton.h"
+#import "UIImage+GMFTintableImage.h"
 
 static const CGFloat kGMFBarPaddingX = 8;
 
 @implementation GMFPlayerControlsView {
   UIImageView *_backgroundView;
-  UIButton *_minimizeButton;
+  UIButton *_fullscreenButton;
   UILabel *_secondsPlayedLabel;
+  UIImage * _fullscreenOpenImage;
+  UIImage * _fullscreenCloseImage;
   UILabel *_totalSecondsLabel;
   UISlider *_scrubber;
   NSTimeInterval _totalSeconds;
   NSTimeInterval _mediaTime;
   NSTimeInterval _downloadedSeconds;
   BOOL _userScrubbing;
+  BOOL _isFullscreen;
 
   __weak id<GMFPlayerControlsViewDelegate> _delegate;
 }
@@ -49,7 +53,11 @@ static const CGFloat kGMFBarPaddingX = 8;
     [_secondsPlayedLabel setTextAlignment:NSTextAlignmentCenter];
     [_secondsPlayedLabel setIsAccessibilityElement:NO];
     [self addSubview:_secondsPlayedLabel];
-
+      
+    _fullscreenCloseImage = [GMFResources playerBarMinimizeButtonImage];
+    _fullscreenOpenImage = [GMFResources playerBarMaximizeButtonImage];
+      
+      
     _totalSecondsLabel = [UILabel GMF_clearLabelForPlayerControls];
     [_totalSecondsLabel setFont:[UIFont fontWithName:@"Helvetica" size:16.0]];
     [_totalSecondsLabel setIsAccessibilityElement:NO];
@@ -77,13 +85,13 @@ static const CGFloat kGMFBarPaddingX = 8;
         forControlEvents:UIControlEventTouchUpOutside];
     [self addSubview:_scrubber];
 
-    _minimizeButton = [self playerButtonWithImage:[GMFResources playerBarMinimizeButtonImage]
-                                           action:@selector(didPressMinimize:)
+    _fullscreenButton = [self playerButtonWithImage:[self getPlayerBarFullscreenImage]
+                                           action:@selector(didPressFullscreen:)
                                accessibilityLabel:
-                                   NSLocalizedStringFromTable(@"Minimize",
+                                   NSLocalizedStringFromTable(@"Fullscreen",
                                                               @"GoogleMediaFramework",
                                                               nil)];
-    [self addSubview:_minimizeButton];
+    [self addSubview:_fullscreenButton];
 
     [self setupLayoutConstraints];
   }
@@ -99,9 +107,13 @@ static const CGFloat kGMFBarPaddingX = 8;
   [_scrubber removeTarget:self
                    action:NULL
          forControlEvents:UIControlEventAllEvents];
-  [_minimizeButton removeTarget:self
+  [_fullscreenButton removeTarget:self
                       action:NULL
             forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (UIImage *)getPlayerBarFullscreenImage {
+    return (_isFullscreen) ? _fullscreenCloseImage : _fullscreenOpenImage;
 }
 
 
@@ -110,13 +122,13 @@ static const CGFloat kGMFBarPaddingX = 8;
   [_secondsPlayedLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
   [_totalSecondsLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
   [_scrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
-  [_minimizeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+  [_fullscreenButton setTranslatesAutoresizingMaskIntoConstraints:NO];
 
   NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_backgroundView,
                                                                  _secondsPlayedLabel,
                                                                  _scrubber,
                                                                  _totalSecondsLabel,
-                                                                 _minimizeButton);
+                                                                 _fullscreenButton);
   
   NSArray *constraints = [[NSArray alloc] init];
   
@@ -136,14 +148,14 @@ static const CGFloat kGMFBarPaddingX = 8;
   
   // Make the minimize button occupy the full height of the view.
   constraints = [constraints arrayByAddingObjectsFromArray:
-                 [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_minimizeButton]|"
+                 [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_fullscreenButton]|"
                                                          options:NSLayoutFormatAlignAllBaseline
                                                          metrics:nil
                                                            views:viewsDictionary]];
   
   // Position the minimize button kGMFBarPaddingX from the right of the background view.
   constraints = [constraints arrayByAddingObject:
-                 [NSLayoutConstraint constraintWithItem:_minimizeButton
+                 [NSLayoutConstraint constraintWithItem:_fullscreenButton
                                               attribute:NSLayoutAttributeRight
                                               relatedBy:NSLayoutRelationEqual
                                                  toItem:_backgroundView
@@ -163,7 +175,7 @@ static const CGFloat kGMFBarPaddingX = 8;
                  [NSLayoutConstraint constraintWithItem:_totalSecondsLabel
                                               attribute:NSLayoutAttributeRight
                                               relatedBy:NSLayoutRelationEqual
-                                                 toItem:_minimizeButton
+                                                 toItem:_fullscreenButton
                                               attribute:NSLayoutAttributeLeft
                                              multiplier:1.0f
                                                constant:-1*kGMFBarPaddingX]];
@@ -250,10 +262,17 @@ static const CGFloat kGMFBarPaddingX = 8;
   }
 }
 
+-(void)updateFullscreenButton {
+    UIImage *btnImage  = [self getPlayerBarFullscreenImage];
+    [_fullscreenButton setImage:btnImage forState:UIControlStateNormal];
+}
+
 - (void)applyControlTintColor:(UIColor *)color {
   [_scrubber setMinimumTrackTintColor:color];
   [_scrubber setThumbTintColor:color];
-  [_minimizeButton GMF_applyTintColor:color];
+   _fullscreenCloseImage = [_fullscreenCloseImage GMF_createTintedImage:color];
+   _fullscreenOpenImage = [_fullscreenOpenImage GMF_createTintedImage:color];
+    [self updateFullscreenButton];
 }
 
 #pragma mark Private Methods
@@ -288,8 +307,10 @@ static const CGFloat kGMFBarPaddingX = 8;
   [_delegate didPressReplay];
 }
 
-- (void)didPressMinimize:(id)sender {
-  [_delegate didPressMinimize];
+- (void)didPressFullscreen:(id)sender {
+    _isFullscreen = !_isFullscreen;
+    [_delegate didPressFullscreen: _isFullscreen];
+    [self updateFullscreenButton];
 }
 
 - (void)didScrubbingStart:(id)sender {

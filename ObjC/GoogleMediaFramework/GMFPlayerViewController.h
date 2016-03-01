@@ -25,7 +25,8 @@ extern NSString * const kGMFPlayerDidMinimizeNotification;
 extern NSString * const kGMFPlayerPlaybackStateDidChangeNotification;
 extern NSString * const kGMFPlayerStateDidChangeToFinishedNotification;
 extern NSString * const kGMFPlayerStateWillChangeToFinishedNotification;
-
+extern NSString * const kGMFPlayerWillEnterFullscreen;
+extern NSString * const kGMFPlayerWillExitFullscreen;
 extern NSString * const kGMFPlayerPlaybackDidFinishReasonUserInfoKey;
 extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 
@@ -54,6 +55,8 @@ extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 // Default: No logo.
 @property(nonatomic, strong) UIImage *logoImage;
 
+@property(nonatomic) BOOL isFullscreen;
+
 - (id)init;
 
 - (void)loadStreamWithURL:(NSURL *)URL;
@@ -61,6 +64,8 @@ extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 - (void)play;
 
 - (void)pause;
+
+- (void)stop;
 
 - (GMFPlayerState)playbackState;
 
