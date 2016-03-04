@@ -43,6 +43,7 @@ import com.google.android.exoplayer.drm.StreamingDrmSessionManager;
 import com.google.android.exoplayer.hls.HlsSampleSource;
 import com.google.android.exoplayer.metadata.MetadataTrackRenderer;
 import com.google.android.exoplayer.metadata.MetadataTrackRenderer.MetadataRenderer;
+import com.google.android.exoplayer.metadata.id3.Id3Frame;
 import com.google.android.exoplayer.text.Cue;
 import com.google.android.exoplayer.text.TextRenderer;
 import com.google.android.exoplayer.upstream.BandwidthMeter;
@@ -63,7 +64,7 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
     DefaultBandwidthMeter.EventListener, MediaCodecVideoTrackRenderer.EventListener,
     MediaCodecAudioTrackRenderer.EventListener, TextRenderer,
     StreamingDrmSessionManager.EventListener, DashChunkSource.EventListener,
-        HlsSampleSource.EventListener, MetadataRenderer<Map<String, Object>> {
+        HlsSampleSource.EventListener, MetadataRenderer<List<Id3Frame>> {
 
   /**
    * Builds renderers for the player.
@@ -111,6 +112,8 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
      * @param e The error.
      */
     void onRendererInitializationError(Exception e);
+
+    void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSicneLastFeedMs);
 
     /**
      * Respond to error in initializing the audio track.
@@ -248,7 +251,7 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
    * A listener for receiving ID3 metadata parsed from the media stream.
    */
   public interface Id3MetadataListener {
-    void onId3Metadata(Map<String, Object> metadata);
+    void onId3Metadata(List<Id3Frame> id3Frames);
   }
 
   /**
@@ -526,7 +529,7 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
   }
 
   /**
-   * Returns whether the track is {@link #PRIMARY_TRACK} or {@link #DISABLED_TRACK).
+   * Returns whether the track is {@link #PRIMARY_TRACK} or {@link #DISABLED_TRACK}.
    * @param type The index indicating the type of video (ex {@link #TYPE_VIDEO}).
    */
   public int getStateForTrackType(int type) {
@@ -826,6 +829,12 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
     }
   }
 
+  @Override
+  public void onAudioTrackUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
+    if (internalErrorListener != null) {
+      internalErrorListener.onAudioTrackUnderrun(bufferSize, bufferSizeMs, elapsedSinceLastFeedMs);
+    }
+  }
 
   @Override
   public void onCryptoError(CryptoException e) {
@@ -839,13 +848,13 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
     // Do nothing.
   }
 
-  /* package */ MetadataTrackRenderer.MetadataRenderer<Map<String, Object>>
+  /* package */ MetadataTrackRenderer.MetadataRenderer<List<Id3Frame>>
       getId3MetadataRenderer() {
-    return new MetadataTrackRenderer.MetadataRenderer<Map<String, Object>>() {
+    return new MetadataTrackRenderer.MetadataRenderer<List<Id3Frame>>() {
       @Override
-      public void onMetadata(Map<String, Object> metadata) {
+      public void onMetadata(List<Id3Frame> id3Frames) {
         if (id3MetadataListener != null) {
-          id3MetadataListener.onId3Metadata(metadata);
+          id3MetadataListener.onId3Metadata(id3Frames);
         }
       }
     };
@@ -874,14 +883,14 @@ public class ExoplayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
   }
 
   @Override
-  public void onMetadata(Map<String, Object> metadata) {
+  public void onMetadata(List<Id3Frame> id3Frames) {
     if (id3MetadataListener != null && getSelectedTrack(TYPE_METADATA) != TRACK_DISABLED) {
-      id3MetadataListener.onId3Metadata(metadata);
+      id3MetadataListener.onId3Metadata(id3Frames);
     }
   }
 
   @Override
-  public void onAvailableRangeChanged(TimeRange availableRange) {
+  public void onAvailableRangeChanged(int sourceId, TimeRange availableRange) {
     if (infoListener != null) {
       infoListener.onAvailableRangeChanged(availableRange);
     }

@@ -16,6 +16,8 @@
 
 	<!-- Original code was substituting a derived class which the binder does not like for matching the base interface to reset to match -->
 	<attr path="/api/package[@name='com.google.android.exoplayer.text.webvtt']/class[@name='WebvttParser']/method[@name='parse']" name="return">com.google.android.exoplayer.text.Subtitle</attr>
+	<attr path="/api/package[@name='com.google.android.exoplayer.text.webvtt']/class[@name='Mp4WebvttParser']/method[@name='parse']" name="return">com.google.android.exoplayer.text.Subtitle</attr>
+	<attr path="/api/package[@name='com.google.android.exoplayer.text.ttml']/class[@name='TtmlParser']/method[@name='parse']" name="return">com.google.android.exoplayer.text.Subtitle</attr>
 
 	<!-- TtmlNode has no declared visibility but needs to be public because TtmlSubtitle exposes it and is public -->
 	<attr path="/api/package[@name='com.google.android.exoplayer.text.ttml']/class[@name='TtmlNode']" name="visibility">public</attr>
@@ -30,14 +32,14 @@
 	<attr path="/api/package[@name='com.google.android.exoplayer.upstream.cache']/class[@name='LeastRecentlyUsedCacheEvictor']/method[@name='compare']/parameter" name="type">java.lang.Object</attr>
 	<attr path="/api/package[@name='com.google.android.exoplayer.chunk']/class[@name='Format.DecreasingBandwidthComparator']/method[@name='compare']/parameter" name="type">java.lang.Object</attr>
 
-	<attr path="/api/package[@name='com.google.android.exoplayer.metadata']/interface[@name='MetadataTrackRenderer.MetadataRenderer']/method[@name='onMetadata' and count(parameter)=1 and parameter[1][@type='T']]/parameter[@name='p0']" name="type">java.lang.Object</attr>
+  <attr path="/api/package[@name='com.google.android.exoplayer.metadata']/interface[@name='MetadataTrackRenderer.MetadataRenderer']/method[@name='onMetadata' and count(parameter)=1 and parameter[1][@type='T']]/parameter[@name='p0']" name="type">java.lang.Object</attr>
 
 	<remove-node path="/api/package[@name='com.google.android.exoplayer.text.subrip']/class[@name='SubripParser']"/>
 	<remove-node path="/api/package[@name='com.google.android.exoplayer.chunk']/class[@name='ContainerMediaChunk']"/>
 	<remove-node path="/api/package[@name='com.google.android.exoplayer.extractor']/class[@name='DefaultTrackOutput']"/>
 	<remove-node path="/api/package[@name='com.google.android.exoplayer.chunk']/class[@name='InitializationChunk']"/>
-	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata']/class[@name='Id3Parser']/method[@name='parse' and count(parameter)=2 and parameter[1][@type='byte[]'] and parameter[2][@type='int']]" />
-	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata']/class[@name='Id3Parser']/method[@name='canParse' and count(parameter)=1 and parameter[1][@type='java.lang.String']]" />
-	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata']/class[@name='Id3Parser']" />
+	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata.id3']/class[@name='Id3Parser']/method[@name='parse' and count(parameter)=2 and parameter[1][@type='byte[]'] and parameter[2][@type='int']]" />
+	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata.id3']/class[@name='Id3Parser']/method[@name='canParse' and count(parameter)=1 and parameter[1][@type='java.lang.String']]" />
+	<remove-node path="/api/package[@name='com.google.android.exoplayer.metadata.id3']/class[@name='Id3Parser']" />
 	<remove-node path="/api/package[@name='com.google.android.exoplayer.text.webvtt']/class[@name='WebvttSubtitle']/constructor[@name='WebvttSubtitle' and count(parameter)=1 and parameter[1][@type='java.util.List&lt;com.google.android.exoplayer.text.webvtt.WebvttCue&gt;']]" />
 </metadata>

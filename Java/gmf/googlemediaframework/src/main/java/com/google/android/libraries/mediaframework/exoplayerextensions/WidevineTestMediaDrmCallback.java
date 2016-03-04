@@ -28,8 +28,6 @@ import android.text.TextUtils;
 
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 
-import org.apache.http.client.ClientProtocolException;
-
 import java.io.IOException;
 import java.util.UUID;
 

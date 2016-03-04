@@ -196,13 +196,7 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
-            isError = true;
-            if (playbackListener != null) {
-                playbackListener.onError(e);
-            }
-
-            removeAdPlayer();
-            contentPlayer.showError();
+           //We do not handle errors
         }
 
         /**
@@ -245,13 +239,7 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
-            isError = true;
-            if(contentPlayer != null) {
-                contentPlayer.showError();
-            }
-            if (playbackListener != null) {
-                playbackListener.onError(e);
-            }
+		//We do not handle errors
         }
 
         /**
@@ -298,10 +286,7 @@ public class ImaPlayer {
             // If there is an error in ad playback, log the error and resume the content.
             Log.d(this.getClass().getSimpleName(), adErrorEvent.getError().getMessage());
 
-            //If we receive an empty response then assume that we should only be playing the content
-            if (adErrorEvent.getError().getErrorCode() == AdError.AdErrorCode.VAST_EMPTY_RESPONSE) {
-                resumeContent();
-            }
+             resumeContent();
         }
 
         @Override
