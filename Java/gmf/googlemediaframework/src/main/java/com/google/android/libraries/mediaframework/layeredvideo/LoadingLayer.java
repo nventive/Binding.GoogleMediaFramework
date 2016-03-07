@@ -24,7 +24,7 @@ public class LoadingLayer implements Layer  {
     /**
      * The color of the progress bar
      */
-    private int loadingColor;
+    private int loadingColor = Color.WHITE;
     /**
      * The view that is created by this layer (it contains LoadingLayer#loading).
      */

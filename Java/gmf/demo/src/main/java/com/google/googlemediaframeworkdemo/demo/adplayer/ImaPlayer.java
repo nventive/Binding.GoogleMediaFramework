@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.google.ads.interactivemedia.v3.api.AdDisplayContainer;
@@ -140,7 +141,21 @@ public class ImaPlayer {
      */
     private SimpleVideoPlayer contentPlayer;
 
+    /**
+     * Keeps track of the currently active video player (content or ad) in order to properly
+     * report which player is in a loading/error state
+     */
     private PlayerType activePlayer;
+
+    /**
+     * The color that will be set for the {@link SimpleVideoPlayer} progress bar
+     */
+    private int loadingColor;
+
+    /**
+     * The color that will be set for the {@link SimpleVideoPlayer} seekbar
+     */
+    private int seekBarColor;
 
     /**
      * The callback that is triggered when fullscreen mode is entered or closed.
@@ -181,13 +196,7 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
-            isError = true;
-            if (playbackListener != null) {
-                playbackListener.onError(e);
-            }
-
-            removeAdPlayer();
-            contentPlayer.showError();
+            //We do not handle errors
         }
 
         /**
@@ -230,13 +239,7 @@ public class ImaPlayer {
         @Override
         public void onError(Exception e) {
 
-            isError = true;
-            if(contentPlayer != null) {
-                contentPlayer.showError();
-            }
-            if (playbackListener != null) {
-                playbackListener.onError(e);
-            }
+            //We do not handle errors
         }
 
         /**
@@ -283,10 +286,7 @@ public class ImaPlayer {
             // If there is an error in ad playback, log the error and resume the content.
             Log.d(this.getClass().getSimpleName(), adErrorEvent.getError().getMessage());
 
-            //If we receive an empty response then assume that we should only be playing the content
-            if (adErrorEvent.getError().getErrorCode() == AdError.AdErrorCode.VAST_EMPTY_RESPONSE) {
-                resumeContent();
-            }
+            resumeContent();
         }
 
         @Override
@@ -294,7 +294,9 @@ public class ImaPlayer {
             if (!isError) {
                 switch (event.getType()) {
                     case LOADED:
-                        adsManager.start();
+                        if (adsManager != null) {
+                            adsManager.start();
+                        }
                         break;
                     case CONTENT_PAUSE_REQUESTED:
                         pauseContent();
@@ -455,6 +457,7 @@ public class ImaPlayer {
                 handlePlay();
             }
         });
+        contentPlayer.hideTopChrome();
         contentPlayer.setIsLoading(true);
 
         // Move the content player's surface layer to the background so that the ad player's surface
@@ -699,7 +702,11 @@ public class ImaPlayer {
      *              (ex. {@link android.graphics.Color#RED}).
      */
     public void setSeekbarColor(int color) {
+        this.seekBarColor = color;
         contentPlayer.setSeekbarColor(color);
+        if (adPlayer != null) {
+            adPlayer.setSeekbarColor(color);
+        }
     }
 
     /**
@@ -708,6 +715,7 @@ public class ImaPlayer {
      *              (ex. {@link android.graphics.Color#RED}).
      */
     public void setLoadingColor(int color) {
+        this.loadingColor = color;
         contentPlayer.setLoadingColor(color);
         if (adPlayer != null) {
             adPlayer.setLoadingColor(color);
@@ -799,17 +807,29 @@ public class ImaPlayer {
      * When you are finished using this {@link ImaPlayer}, make sure to call this method.
      */
     public void release() {
+        if (videoAdPlayer != null) {
+            for (VideoAdPlayer.VideoAdPlayerCallback callback : callbacks) {
+                videoAdPlayer.removeCallback(callback);
+            }
+        }
         if (adPlayer != null) {
             adPlayer.release();
             adPlayer = null;
         }
+
         if (adsManager != null) {
+            adsManager.discardAdBreak();
+            adsManager.destroy();
             adsManager = null;
         }
         if (this.activity != null) {
             if (activity.getRequestedOrientation() != originalOrientation) {
                 activity.setRequestedOrientation(originalOrientation);
             }
+            activity.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(null);
+            activity.getWindow().getDecorView().setSystemUiVisibility(0);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         }
         unregisterLifecycleCallback();
         adsLoader.contentComplete();
@@ -854,7 +874,8 @@ public class ImaPlayer {
         adPlayer.moveSurfaceToForeground();
         adPlayer.play();
         adPlayer.disableSeeking();
-        adPlayer.setSeekbarColor(Color.YELLOW);
+        adPlayer.setSeekbarColor(seekBarColor);
+        adPlayer.setLoadingColor(loadingColor);
         adPlayer.hideTopChrome();
         adPlayer.setFullscreen(contentPlayer.isFullscreen());
 

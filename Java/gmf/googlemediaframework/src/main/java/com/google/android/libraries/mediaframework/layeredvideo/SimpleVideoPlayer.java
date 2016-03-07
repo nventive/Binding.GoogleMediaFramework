@@ -201,7 +201,7 @@ public class SimpleVideoPlayer {
   }
 
   public void setIsLoading(boolean isLoading) {
-    hide();
+    playbackControlLayer.setPausePlayVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
     loadingLayer.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
   }
 

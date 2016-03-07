@@ -457,6 +457,7 @@ public class ImaPlayer {
                 handlePlay();
             }
         });
+        contentPlayer.hideTopChrome();
         contentPlayer.setIsLoading(true);
 
         // Move the content player's surface layer to the background so that the ad player's surface

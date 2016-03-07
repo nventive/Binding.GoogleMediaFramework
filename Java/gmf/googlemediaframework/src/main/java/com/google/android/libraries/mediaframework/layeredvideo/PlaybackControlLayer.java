@@ -1116,8 +1116,10 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     return position;
   }
 
-  public void setVisibility(int visibility) {
-    this.view.setVisibility(visibility);
+  public void setPausePlayVisibility(int visibility) {
+    if (pausePlayButton != null) {
+      pausePlayButton.setVisibility(visibility);
+    }
   }
   /**
    * Set play callback
