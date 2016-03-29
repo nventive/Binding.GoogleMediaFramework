@@ -217,6 +217,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private boolean isVisible;
 
   /**
+   * Whether the playback control layer should forcibly be hidden.
+   */
+  private boolean forceHidden;
+
+  /**
    * Whether the playback control layer is currently in the process of fading out.
    */
   private boolean isFadingOut;
@@ -404,14 +409,15 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private FrameLayout view;
 
   public PlaybackControlLayer(String videoTitle) {
-    this(videoTitle, null);
+    this(videoTitle, null, true);
   }
-  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback) {
+  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, boolean showControls) {
     this.videoTitle = videoTitle;
     this.canSeek = true;
     this.fullscreenCallback = fullscreenCallback;
     this.shouldBePlaying = false;
     actionButtons = new ArrayList<ImageButton>();
+    this.forceHidden = !showControls;
   }
 
   /**
@@ -657,7 +663,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    *                controls will not disappear unless their container is tapped again.
    */
   public void show(int timeout) {
-    if (!isVisible && getLayerManager().getContainer() != null) {
+    if (!isVisible && getLayerManager().getContainer() != null && !forceHidden) {
       playbackControlRootView.setAlpha(1.0f);
       // Make the view visible.
       playbackControlRootView.setVisibility(View.VISIBLE);

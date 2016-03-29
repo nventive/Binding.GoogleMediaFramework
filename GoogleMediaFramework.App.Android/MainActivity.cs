@@ -80,7 +80,11 @@ namespace GoogleMediaFramework.App.Android
 			string adTagUrl = video.adUrl;
 			string videoTitle = video.title;
 
-			imaPlayer = new ImaPlayer(this, videoPlayerContainer, video.video, videoTitle, adTagUrl);
+			imaPlayer = new ImaPlayer.Builder(this, videoPlayerContainer, video.video)
+				.SetVideoTitle(videoTitle)
+				.SetAdTagUrl(adTagUrl)
+				.Build();
+				
 			imaPlayer.Play();
 		}
 
@@ -128,7 +132,7 @@ namespace GoogleMediaFramework.App.Android
 					"lU0&cust_params=gmf_format%3Dstd%2Cskip"),
 				new VideoListItem("No ads (mp4)",
 					new Video("http://rmcdn.2mdn.net/MotifFiles/html/1248596/android_1330378998288.mp4",
-						Video.VideoType.Dash),
+						Video.VideoType.Mp4),
 					null),
 				new VideoListItem("No ads - BBB (HLS)",
 					new Video("http://googleimadev-vh.akamaihd.net/i/big_buck_bunny/bbb-,480p,720p,1080p" +

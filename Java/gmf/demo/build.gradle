@@ -43,4 +43,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:8.1.0'
     compile project(':googlemediaframework')
     compile files('libs/imaplayer.jar')
+    compile files('libs/imasdk.jar')
 }

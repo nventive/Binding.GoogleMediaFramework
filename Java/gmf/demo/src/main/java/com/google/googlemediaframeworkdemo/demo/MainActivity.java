@@ -126,12 +126,12 @@ public class MainActivity extends Activity implements PlaybackControlLayer.Fulls
     String adTagUrl = videoListItem.adUrl;
     String videoTitle = videoListItem.title;
 
-    imaPlayer = new ImaPlayer(this,
-        videoPlayerContainer,
-        videoListItem.video,
-        videoTitle,
-        adTagUrl);
-    imaPlayer.setFullscreenCallback(this);
+    imaPlayer = new ImaPlayer.Builder(this, videoPlayerContainer, videoListItem.video)
+            .setVideoTitle(videoTitle)
+            .setAdTagUrl(adTagUrl)
+            .setFullscreenCallback(this)
+            .build();
+
     Resources res = getResources();
 
     // Customize the UI of the video player.

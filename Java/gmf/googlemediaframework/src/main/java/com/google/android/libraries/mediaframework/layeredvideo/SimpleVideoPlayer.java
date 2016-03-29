@@ -77,13 +77,15 @@ public class SimpleVideoPlayer {
    * @param video The video that should be played.
    * @param videoTitle The title of the video (displayed on the left of the top chrome).
    * @param autoplay Whether the video should start playing immediately.
+   * @param showControls Whether the playback control layer should display the controls.
    */
   public SimpleVideoPlayer(Activity activity,
                            FrameLayout container,
                            Video video,
                            String videoTitle,
-                           boolean autoplay) {
-    this(activity, container, video, videoTitle, autoplay, 0, null);
+                           boolean autoplay,
+                           boolean showControls) {
+    this(activity, container, video, videoTitle, autoplay, showControls, 0, null);
   }
 
   /**
@@ -92,6 +94,7 @@ public class SimpleVideoPlayer {
    * @param video The video that should be played.
    * @param videoTitle The title of the video (displayed on the left of the top chrome).
    * @param autoplay Whether the video should start playing immediately.
+   * @param showControls Whether the playback control layer should display the controls.
    * @param fullscreenCallback The callback which gets triggered when the player enters or leaves
    *                           fullscreen mode.
    */
@@ -100,11 +103,12 @@ public class SimpleVideoPlayer {
                            Video video,
                            String videoTitle,
                            boolean autoplay,
+                           boolean showControls,
                            int startPostitionMs,
-                           PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
+                           PlaybackControlLayer.FullscreenCallback fullscreenCallback ) {
     this.activity = activity;
 
-    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback);
+    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback, showControls);
     subtitleLayer = new SubtitleLayer();
     videoSurfaceLayer = new VideoSurfaceLayer(autoplay);
     loadingLayer = new LoadingLayer();

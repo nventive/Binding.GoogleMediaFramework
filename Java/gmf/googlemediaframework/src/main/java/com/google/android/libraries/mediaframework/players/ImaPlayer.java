@@ -408,35 +408,21 @@ public class ImaPlayer {
         }
     };
 
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     * @param videoTitle The title of the video (displayed on the left of the top chrome).
-     * @param sdkSettings The settings that should be used to configure the IMA SDK.
-     * @param adTagUrl The URL containing the VAST document of the ad.
-     * @param fullscreenCallback The callback that should be triggered when the player enters or
-     *                           leaves fullscreen.
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video,
-                     String videoTitle,
-                     ImaSdkSettings sdkSettings,
-                     String adTagUrl,
-                     PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
-        this.activity = activity;
-        this.container = container;
+    private ImaPlayer(Builder builder) {
+        this.activity = builder.activity;
+        this.container = builder.container;
         this.originalOrientation = this.activity.getRequestedOrientation();
-        if (adTagUrl != null) {
-            this.adTagUrl = Uri.parse(adTagUrl);
+        this.playbackListener = builder.playbackListener;
+
+        if (builder.adTagUrl != null) {
+            this.adTagUrl = Uri.parse(builder.adTagUrl);
         }
 
         registerLifecycleCallback();
-        sdkSettings.setPlayerType(PLAYER_TYPE);
-        sdkSettings.setPlayerVersion(PLAYER_VERSION);
-        sdkSettings.setLanguage(Locale.getDefault().getLanguage());
-        adsLoader = ImaSdkFactory.getInstance().createAdsLoader(activity, sdkSettings);
+        builder.sdkSettings.setPlayerType(PLAYER_TYPE);
+        builder.sdkSettings.setPlayerVersion(PLAYER_VERSION);
+        builder.sdkSettings.setLanguage(Locale.getDefault().getLanguage());
+        adsLoader = ImaSdkFactory.getInstance().createAdsLoader(builder.activity, builder.sdkSettings);
         adListener = new AdListener();
         adsLoader.addAdErrorListener(adListener);
         adsLoader.addAdsLoadedListener(adListener);
@@ -444,11 +430,12 @@ public class ImaPlayer {
         callbacks = new ArrayList<VideoAdPlayer.VideoAdPlayerCallback>();
 
         boolean autoplay = adTagUrl == null;
-        contentPlayer = new SimpleVideoPlayer(activity,
-                container,
-                video,
-                videoTitle,
-                autoplay);
+        contentPlayer = new SimpleVideoPlayer(builder.activity,
+                builder.container,
+                builder.video,
+                builder.videoTitle,
+                autoplay,
+                builder.showControls);
 
         contentPlayer.addPlaybackListener(contentPlaybackListener);
         contentPlayer.setPlayCallback(new PlaybackControlLayer.PlayCallback() {
@@ -460,12 +447,17 @@ public class ImaPlayer {
         contentPlayer.hideTopChrome();
         contentPlayer.setIsLoading(true);
 
+        setLoadingColor(builder.loadingColor);
+        setSeekbarColor(builder.seekbarColor);
+        setIsFullscreenToggleVisible(!builder.fullscreenToggleDisabled);
+        setFullscreen(builder.isFullscreen);
+
         // Move the content player's surface layer to the background so that the ad player's surface
         // layer can be overlaid on top of it during ad playback.
         contentPlayer.moveSurfaceToBackground();
 
         // Create the ad adDisplayContainer UI which will be used by the IMA SDK to overlay ad controls.
-        adUiContainer = new FrameLayout(activity);
+        adUiContainer = new FrameLayout(builder.activity);
         container.addView(adUiContainer);
         adUiContainer.setLayoutParams(Util.getLayoutParamsBasedOnParent(
                 adUiContainer,
@@ -473,105 +465,10 @@ public class ImaPlayer {
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
 
-        this.originalOrientation = activity.getRequestedOrientation();
-        this.originalContainerLayoutParams = container.getLayoutParams();
+        this.originalOrientation = builder.activity.getRequestedOrientation();
+        this.originalContainerLayoutParams = builder.container.getLayoutParams();
 
-        setFullscreenCallback(fullscreenCallback);
-    }
-
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     * @param videoTitle The title of the video (displayed on the left of the top chrome).
-     * @param sdkSettings The settings that should be used to configure the IMA SDK.
-     * @param adTagUrl The URL containing the VAST document of the ad.
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video,
-                     String videoTitle,
-                     ImaSdkSettings sdkSettings,
-                     String adTagUrl) {
-        this(activity, container, video, videoTitle, sdkSettings, adTagUrl, null);
-    }
-
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     * @param videoTitle The title of the video (displayed on the left of the top chrome).
-     * @param adTagUrl The URL containing the VAST document of the ad.
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video,
-                     String videoTitle,
-                     String adTagUrl) {
-        this(activity,
-                container,
-                video,
-                videoTitle,
-                ImaSdkFactory.getInstance().createImaSdkSettings(),
-                adTagUrl);
-    }
-
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     * @param videoTitle The title of the video (displayed on the left of the top chrome).
-     * @param adTagUrl The URL containing the VAST document of the ad.
-     * @param playbackListener The listener that will receive playback events (starte, error, buffering, etc.).
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video,
-                     String videoTitle,
-                     String adTagUrl,
-                     ExoplayerWrapper.PlaybackListener playbackListener) {
-        this(activity,
-                container,
-                video,
-                videoTitle,
-                ImaSdkFactory.getInstance().createImaSdkSettings(),
-                adTagUrl);
-        this.playbackListener = playbackListener;
-    }
-
-
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     * @param videoTitle The title of the video (displayed on the left of the top chrome).
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video,
-                     String videoTitle) {
-        this(activity,
-                container,
-                video,
-                videoTitle,
-                ImaSdkFactory.getInstance().createImaSdkSettings(),
-                null);
-    }
-
-    /**
-     * @param activity The activity that will contain the video player.
-     * @param container The {@link FrameLayout} which will contain the video player.
-     * @param video The video that should be played.
-     */
-    public ImaPlayer(Activity activity,
-                     FrameLayout container,
-                     Video video) {
-        this(activity,
-                container,
-                video,
-                "",
-                ImaSdkFactory.getInstance().createImaSdkSettings(),
-                null);
+        setFullscreenCallback(builder.fullscreenCallback);
     }
 
     /**
@@ -864,6 +761,7 @@ public class ImaPlayer {
                 adVideo,
                 "",
                 true,
+                false,
                 0,
                 fullscreenCallback);
 
@@ -994,5 +892,89 @@ public class ImaPlayer {
             adsShown = true;
         }
     }
-}
 
+    public static class Builder {
+        private Activity activity;
+        private FrameLayout container;
+        private Video video;
+        private String videoTitle;
+        private ImaSdkSettings sdkSettings;
+        private String adTagUrl;
+        private PlaybackControlLayer.FullscreenCallback fullscreenCallback;
+        private ExoplayerWrapper.PlaybackListener playbackListener;
+        private boolean showControls;
+        private int loadingColor;
+        private int seekbarColor;
+        private boolean fullscreenToggleDisabled;
+        private boolean isFullscreen;
+
+        public Builder(Activity activity, FrameLayout container, Video video) {
+            this.activity = activity;
+            this.container = container;
+            this.video = video;
+
+            videoTitle = "";
+            adTagUrl = null;
+            sdkSettings = ImaSdkFactory.getInstance().createImaSdkSettings();
+            fullscreenCallback = null;
+            playbackListener = null;
+            showControls = true;
+            loadingColor = 0;
+            seekbarColor = 0;
+        }
+
+        public ImaPlayer build() {
+            return new ImaPlayer(this);
+        }
+
+        public Builder setVideoTitle(String videoTitle) {
+            this.videoTitle = videoTitle;
+            return this;
+        }
+
+        public Builder setSdkSettings(ImaSdkSettings sdkSettings) {
+            this.sdkSettings = sdkSettings;
+            return this;
+        }
+
+        public Builder setAdTagUrl(String adTagUrl) {
+            this.adTagUrl = adTagUrl;
+            return this;
+        }
+
+        public Builder setFullscreenCallback(PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
+            this.fullscreenCallback = fullscreenCallback;
+            return this;
+        }
+
+        public Builder disablePlaybackControls(boolean isDisabled) {
+            this.showControls = !isDisabled;
+            return this;
+        }
+
+        public Builder setPlaybackListener(ExoplayerWrapper.PlaybackListener playbackListener) {
+            this.playbackListener = playbackListener;
+            return this;
+        }
+
+        public Builder setSeekbarColor(int seekbarColor) {
+            this.seekbarColor = seekbarColor;
+            return this;
+        }
+
+        public Builder setLoadingColor(int loadingColor) {
+            this.loadingColor = loadingColor;
+            return this;
+        }
+
+        public Builder disableFullscreenToggle(boolean isDisabled) {
+            this.fullscreenToggleDisabled = isDisabled;
+            return this;
+        }
+
+        public Builder setIsFullscreen(boolean isFullscreen) {
+            this.isFullscreen = isFullscreen;
+            return this;
+        }
+    }
+}
