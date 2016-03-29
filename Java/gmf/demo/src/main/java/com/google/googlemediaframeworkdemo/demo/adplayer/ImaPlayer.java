@@ -447,12 +447,6 @@ public class ImaPlayer {
         contentPlayer.hideTopChrome();
         contentPlayer.setIsLoading(true);
 
-        setLoadingColor(builder.loadingColor);
-        setSeekbarColor(builder.seekbarColor);
-        setIsFullscreenToggleVisible(!builder.fullscreenToggleDisabled);
-        setFullscreen(builder.isFullscreen);
-
-
         // Move the content player's surface layer to the background so that the ad player's surface
         // layer can be overlaid on top of it during ad playback.
         contentPlayer.moveSurfaceToBackground();
@@ -465,11 +459,13 @@ public class ImaPlayer {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-
-        this.originalOrientation = builder.activity.getRequestedOrientation();
         this.originalContainerLayoutParams = builder.container.getLayoutParams();
 
         setFullscreenCallback(builder.fullscreenCallback);
+        setLoadingColor(builder.loadingColor);
+        setSeekbarColor(builder.seekbarColor);
+        setIsFullscreenToggleVisible(!builder.fullscreenToggleDisabled);
+        setFullscreen(builder.isFullscreen);
     }
 
     /**
