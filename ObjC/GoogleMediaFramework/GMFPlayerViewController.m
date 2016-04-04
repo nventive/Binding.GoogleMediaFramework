@@ -61,6 +61,7 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
   BOOL _isUserScrubbing;
   BOOL _wasPlayingBeforeSeeking;
   BOOL _isFullscreen;
+  BOOL _shouldHideControls;
   CGRect _originalPlayerFrame;
   // If there is no overlay view created yet, but we receive a request to create action button,
   // we store the request in a mutable array of dictionaries which we use to construct the the
@@ -88,6 +89,13 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
   } else {
     [_videoPlayerOverlayViewController hidePlayerControlsAnimated:animated];
   }
+}
+
+- (void)setShouldHideControls:(BOOL)shouldHideControls {
+    _shouldHideControls = shouldHideControls;
+    if (_videoPlayerOverlayViewController) {
+        [_videoPlayerOverlayViewController playerOverlayView].hidden = _shouldHideControls;
+    }
 }
 
 - (void)loadStreamWithURL:(NSURL *)URL {
@@ -188,6 +196,7 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
   }
   
   [_playerView setOverlayView:[_videoPlayerOverlayViewController playerOverlayView]];
+  [_videoPlayerOverlayViewController playerOverlayView].hidden = _shouldHideControls;
   if (_controlTintColor && [self.playerOverlayView respondsToSelector:@selector(applyControlTintColor:)]) {
     [self.playerOverlayView applyControlTintColor:_controlTintColor];
   }

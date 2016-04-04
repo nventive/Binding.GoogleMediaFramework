@@ -57,6 +57,8 @@ extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 
 @property(nonatomic) BOOL isFullscreen;
 
+@property(nonatomic) BOOL shouldHideControls;
+
 - (id)init;
 
 - (void)loadStreamWithURL:(NSURL *)URL;
