@@ -378,6 +378,12 @@ public class SimpleVideoPlayer {
   }
 
   /**
+   * Sets whether the player controls will be hidden or not
+   * @param isHidden Whether or not the playback controls should be forcibly hidden.
+   */
+  public void setControlsHidden(boolean isHidden) { playbackControlLayer.setForceHidden(isHidden); }
+
+  /**
    * When you are finished using this {@link SimpleVideoPlayer}, make sure to call this method.
    */
   public void release() {

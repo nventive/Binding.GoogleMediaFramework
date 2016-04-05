@@ -1091,6 +1091,17 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
+   * Sets whether the player controls will be hidden or not
+   * @param isHidden Whether or not the playback controls should be forcibly hidden.
+   */
+  public void setForceHidden(boolean isHidden) {
+    this.forceHidden = isHidden;
+    if (this.forceHidden) {
+      hide();
+    }
+  }
+
+  /**
    * Adjust the position of the action bar to reflect the progress of the video.
    */
   public int updateProgress() {
@@ -1138,5 +1149,4 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   {
     getLayerManager().getContainer().setOnClickListener(null);
   }
-
 }

@@ -616,7 +616,16 @@ public class ImaPlayer {
         }
     }
 
-
+    /**
+     * Sets whether the player controls will be hidden or not
+     * @param disabled Whether or not the playback controls should be forcibly hidden.
+     */
+    public void setPlaybackControlsDisabled(boolean disabled) {
+        if (adPlayer != null) {
+            adPlayer.setControlsHidden(disabled);
+        }
+        contentPlayer.setControlsHidden(disabled);
+    }
 
     /**
      * Creates a button to put in the top right of the video player.
