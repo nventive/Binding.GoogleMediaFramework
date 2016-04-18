@@ -184,6 +184,12 @@ public class ImaPlayer {
     private boolean adsShown;
 
     /**
+     * A flag to indicate that the video should continue to play
+     * when the Activity is not in the foreground.
+     */
+    private boolean backgroundPlaybackEnabled;
+
+    /**
      * Notifies callbacks when the ad finishes.
      */
     private final ExoplayerWrapper.PlaybackListener adPlaybackListener
@@ -464,6 +470,7 @@ public class ImaPlayer {
         setFullscreenCallback(builder.fullscreenCallback);
         setLoadingColor(builder.loadingColor);
         setSeekbarColor(builder.seekbarColor);
+        setIsBackgroundPlaybackEnabled(builder.backgroundPlaybackEnabled);
         setIsFullscreenToggleVisible(!builder.fullscreenToggleDisabled);
         setFullscreen(builder.isFullscreen);
     }
@@ -530,7 +537,9 @@ public class ImaPlayer {
 
                     @Override
                     public void onActivityPaused(Activity activity) {
-                        pause();
+                        if (!ImaPlayer.this.backgroundPlaybackEnabled) {
+                            pause();
+                        }
                     }
 
                     @Override
@@ -642,6 +651,13 @@ public class ImaPlayer {
                                 View.OnClickListener onClickListener) {
         contentPlayer.addActionButton(icon, contentDescription, onClickListener);
     }
+
+    /**
+     * Sets the boolean that will dictate whether or not the the video will continue to play while
+     * the Activity is not in the foreground.
+     * @param isEnabled boolean of whether or not background playback is enabled
+     */
+    public void setIsBackgroundPlaybackEnabled(boolean isEnabled) { this.backgroundPlaybackEnabled = isEnabled; }
 
     /**
      * Sets the boolean that will dictate whether or not the fullscreen toggle button
@@ -913,6 +929,7 @@ public class ImaPlayer {
         private int seekbarColor;
         private boolean fullscreenToggleDisabled;
         private boolean isFullscreen;
+        private boolean backgroundPlaybackEnabled;
 
         public Builder(Activity activity, FrameLayout container, Video video) {
             this.activity = activity;
@@ -980,6 +997,11 @@ public class ImaPlayer {
 
         public Builder setIsFullscreen(boolean isFullscreen) {
             this.isFullscreen = isFullscreen;
+            return this;
+        }
+
+        public Builder setBackgroundPlaybackEnabled(boolean isEnabled) {
+            this.backgroundPlaybackEnabled = isEnabled;
             return this;
         }
     }
