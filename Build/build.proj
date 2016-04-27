@@ -33,6 +33,7 @@
 		
 		<!-- Update the assembly versions -->
 		<Exec Command="attrib -r .\GoogleMediaFramework.nuspec" />
+		<Exec Command="attrib -r .\GoogleMediaFrameworkForAdMob.nuspec" />
 
 		<XmlPoke
 			XmlInputPath=".\GoogleMediaFramework.nuspec"
@@ -40,12 +41,22 @@
 			Value="$(PackageVersion)"
 			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
 
+		<XmlPoke
+			XmlInputPath=".\GoogleMediaFrameworkForAdMob.nuspec"
+			Query ="/x:package/x:metadata/x:version"
+			Value="$(PackageVersion)"
+			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
+
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack GoogleMediaFramework.nuspec" />
+		<Exec Command="$(NuGetBin) pack GoogleMediaFrameworkForAdMob.nuspec" />
 
 		<!-- Publish the new packages -->
 		<Exec Command="copy .\GoogleMediaFramework.$(PackageVersion).nupkg $(NuGetRepositoryPath)" Condition="'$(PublishNuget)'!=''" />
 		<Exec Command="copy .\GoogleMediaFramework.$(PackageVersion).nupkg $(MyOutputDir)" />
+		<Exec Command="copy .\GoogleMediaFrameworkForAdMob.$(PackageVersion).nupkg $(NuGetRepositoryPath)" Condition="'$(PublishNuget)'!=''" />
+		<Exec Command="copy .\GoogleMediaFrameworkForAdMob.$(PackageVersion).nupkg $(MyOutputDir)" />
 
 	</Target>
 
