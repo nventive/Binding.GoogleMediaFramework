@@ -268,10 +268,9 @@ static const CGFloat kGMFBarPaddingX = 8;
 }
 
 - (void)applyControlTintColor:(UIColor *)color {
-  [_scrubber setMinimumTrackTintColor:color];
-  [_scrubber setThumbTintColor:color];
-   _fullscreenCloseImage = [_fullscreenCloseImage GMF_createTintedImage:color];
-   _fullscreenOpenImage = [_fullscreenOpenImage GMF_createTintedImage:color];
+    [_scrubber setMinimumTrackTintColor:color];
+    _fullscreenCloseImage = [_fullscreenCloseImage GMF_createTintedImage:color];
+    _fullscreenOpenImage = [_fullscreenOpenImage GMF_createTintedImage:color];
     [self updateFullscreenButton];
 }
 
