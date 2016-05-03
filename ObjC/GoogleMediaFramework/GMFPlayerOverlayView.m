@@ -198,9 +198,6 @@
   [_topBarView setAlpha:(_isTopBarEnabled && visible) ? 1 : 0];
   [_playerControlsView setAlpha:visible ? 1 : 0];
   [_playPauseReplayButton setAlpha:visible ? 1 : 0];
-  
-  [self setNeedsLayout];
-  [self layoutIfNeeded];
 }
 
 - (void)disableTopBar {
