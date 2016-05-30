@@ -57,10 +57,9 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
 @implementation GMFPlayerViewController {
   GMFPlayerView *_playerView;
   NSURL *_currentMediaURL;
-
+  BOOL _isFullscreen;
   BOOL _isUserScrubbing;
   BOOL _wasPlayingBeforeSeeking;
-  BOOL _isFullscreen;
   BOOL _shouldHideControls;
   CGRect _originalPlayerFrame;
   // If there is no overlay view created yet, but we receive a request to create action button,
@@ -274,6 +273,12 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
   if (self.playerOverlayView && [self.playerOverlayView respondsToSelector:@selector(setLogoImage:)]) {
     [self.playerOverlayView setLogoImage:logoImage];
   }
+}
+
+- (void) setFullscreen:(BOOL)isFullscreen {
+    if (_isFullscreen != isFullscreen) {
+        [self toggleFullscreen];
+    }
 }
 
 #pragma mark Player State Change Handlers

@@ -613,6 +613,10 @@ namespace GoogleMediaFramework
 		[Export("stop")]
 		void Stop();
 
+		// -(void)setFullscreen:(BOOL)isFullscreen;
+		[Export("setFullscreen:")]
+		void SetFullscreen(bool isFullscreen);
+
 		// -(GMFPlayerState)playbackState;
 		[Export("playbackState")]
 		GMFPlayerState PlaybackState { get; }
