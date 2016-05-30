@@ -3,7 +3,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
 	<PropertyGroup>
-		<Revision>$(TeamBuildNumber.Substring(1))</Revision>
+		<Revision>$(BUILD_SOURCEVERSION.Substring(1))</Revision>
 		<NuGetBin>..\packages\NuGet.CommandLine.2.8.6\tools\NuGet.exe</NuGetBin>
 		<NuGetRepositoryPath>\\main.nventive.local\Drops\Umbrella\Packages</NuGetRepositoryPath>
 		<PackageVersion>0.2.0.$(Revision)</PackageVersion>
