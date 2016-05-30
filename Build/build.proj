@@ -10,8 +10,6 @@
 	</PropertyGroup>
 
 	<Target Name="Build">
-		<!--<Delete Files="$(MyOutputDir)" />-->
-		<MakeDir Directories="$(MyOutputDir)" />
 		<MSBuild Properties="Configuration=$(Configuration);VisualStudioVersion=12.0"
 				 Projects="..\GoogleMediaFramework.sln"
 				 RebaseOutputs="false"
@@ -53,10 +51,7 @@
 		<Exec Command="$(NuGetBin) pack GoogleMediaFrameworkForAdMob.nuspec" />
 
 		<!-- Publish the new packages -->
-		<Exec Command="copy .\GoogleMediaFramework.$(PackageVersion).nupkg $(NuGetRepositoryPath)" Condition="'$(PublishNuget)'!=''" />
-		<Exec Command="copy .\GoogleMediaFramework.$(PackageVersion).nupkg $(MyOutputDir)" />
-		<Exec Command="copy .\GoogleMediaFrameworkForAdMob.$(PackageVersion).nupkg $(NuGetRepositoryPath)" Condition="'$(PublishNuget)'!=''" />
-		<Exec Command="copy .\GoogleMediaFrameworkForAdMob.$(PackageVersion).nupkg $(MyOutputDir)" />
+		<!--Done in build definition task-->
 
 	</Target>
 
