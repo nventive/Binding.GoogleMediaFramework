@@ -111,7 +111,6 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
 
 - (void)stop {
     [self resetPlayerAndPlayerView];
-    [self exitFullscreen];
 }
 
 - (void)setAboveRenderingView:(UIView *)view {
