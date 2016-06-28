@@ -333,6 +333,12 @@ static const CGFloat kGMFBarPaddingX = 8;
   [_scrubber setMinimumTrackTintColor:color];
 }
 
+- (void)setFullscreenVisible:(BOOL)isFullscreenVisible {
+    if (_fullscreenButton) {
+        [_fullscreenButton setHidden:!isFullscreenVisible];
+    }
+}
+
 - (void)disableSeekbarInteraction {
   
   // Hide the seek bar thumb by replacing it with a transparent image.

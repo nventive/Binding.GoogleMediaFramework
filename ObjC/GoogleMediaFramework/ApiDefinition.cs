@@ -141,6 +141,10 @@ namespace GoogleMediaFramework
 		// -(void)applyControlTintColor:(UIColor *)color;
 		[Export("applyControlTintColor:")]
 		void ApplyControlTintColor(UIColor color);
+
+		// -(void)setFullscreenVisible:(BOOL)isFullscreenVisible;
+		[Export("setFullscreenVisible:")]
+		void SetFullscreenVisible(bool isFullscreenVisible);
 	}
 
 	// @protocol GMFPlayerControlsProtocol <NSObject>
@@ -211,6 +215,11 @@ namespace GoogleMediaFramework
 		// @optional -(void)setLogoImage:(UIImage *)logoImage;
 		[Export("setLogoImage:")]
 		void SetLogoImage(UIImage logoImage);
+
+		//@optional -(void)setFullscreenVisible:(BOOL)isFullscreenVisible;
+		[Export("setFullscreenVisible:")]
+		void SetFullscreenVisible(bool isFullscreenVisible);
+
 	}
 
 	// @interface GMFTopBarView : UIView
@@ -293,6 +302,10 @@ namespace GoogleMediaFramework
 		// -(void)setLogoImage:(UIImage *)logoImage;
 		[Export("setLogoImage:")]
 		void SetLogoImage(UIImage logoImage);
+
+		// -(void)setFullscreenVisible:(BOOL)isFullscreenVisible;
+		[Export("setFullscreenVisible:")]
+		void SetFullscreenVisible(bool isFullscreenVisible);
 
 		// -(void)disableTopBar;
 		[Export("disableTopBar")]
@@ -616,6 +629,10 @@ namespace GoogleMediaFramework
 		// -(void)setFullscreen:(BOOL)isFullscreen;
 		[Export("setFullscreen:")]
 		void SetFullscreen(bool isFullscreen);
+
+		//-(void)setFullscreenVisible:(BOOL)isFullscreenVisible;
+		[Export("setFullscreenVisible:")]
+		void SetFullscreenVisible(bool isFullscreenVisible);
 
 		// -(GMFPlayerState)playbackState;
 		[Export("playbackState")]

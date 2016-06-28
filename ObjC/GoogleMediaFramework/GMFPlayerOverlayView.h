@@ -52,6 +52,7 @@ typedef enum CurrentPlayPauseReplayIcon {
 - (void)applyControlTintColor:(UIColor *)color;
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setLogoImage:(UIImage *)logoImage;
+- (void)setFullscreenVisible:(BOOL)isFullscreenVisible;
 
 - (void)disableTopBar;
 - (void)enableTopBar;

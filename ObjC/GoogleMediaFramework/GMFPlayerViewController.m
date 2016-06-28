@@ -280,6 +280,12 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
     }
 }
 
+-(void) setFullscreenVisible:(BOOL)isFullscreenVisible {
+    if (self.playerOverlayView && [self.playerOverlayView respondsToSelector:@selector(setFullscreenVisible:)]) {
+        [self.playerOverlayView setFullscreenVisible:isFullscreenVisible];
+    }
+}
+
 #pragma mark Player State Change Handlers
 
 - (void)playerStateDidChangeToReadyToPlay {

@@ -229,6 +229,10 @@
   [_topBarView setLogoImage:logoImage];
 }
 
+-(void)setFullscreenVisible:(BOOL)isFullscreenVisible {
+    [_playerControlsView setFullscreenVisible:isFullscreenVisible];
+}
+
 - (void)showPlayButton {
   _currentPlayPauseReplayIcon = PLAY;
   [_playPauseReplayButton setImage:_playImage forState:UIControlStateNormal];

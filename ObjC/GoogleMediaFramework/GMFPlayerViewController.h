@@ -71,6 +71,8 @@ extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 
 - (void)setFullscreen:(BOOL)isFullscreen;
 
+- (void)setFullscreenVisible:(BOOL)isFullscreenVisible;
+
 - (GMFPlayerState)playbackState;
 
 - (NSTimeInterval)currentMediaTime;

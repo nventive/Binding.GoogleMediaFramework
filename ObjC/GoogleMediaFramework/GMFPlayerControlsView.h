@@ -56,6 +56,7 @@
 - (void)enableSeekbarInteraction;
 
 - (void)applyControlTintColor:(UIColor *)color;
+- (void)setFullscreenVisible:(BOOL)isFullscreenVisible;
 
 @end
 
