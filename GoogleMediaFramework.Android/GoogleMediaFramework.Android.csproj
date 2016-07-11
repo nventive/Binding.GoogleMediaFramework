@@ -12,7 +12,7 @@
     <RootNamespace>GoogleMediaFramework.Android</RootNamespace>
     <AssemblyName>GoogleMediaFramework</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -76,6 +76,10 @@
     <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rem copy "$(TargetDir)\*.*" "C:\nv\Cineplex Rec Room\Main\Sources\packages\GoogleMediaFramework.0.2.0.8943\lib\MonoAndroid"
+rem copy "$(TargetDir)\*.*" "C:\nv\Cineplex Rec Room\Main\Sources\packages\GoogleMediaFramework.0.2.0.9102\lib\MonoAndroid"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

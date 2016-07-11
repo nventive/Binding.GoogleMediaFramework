@@ -412,6 +412,7 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
       [self setState:kGMFPlayerStatePaused];
     }
   } else if ([_playerItem status] == AVPlayerItemStatusFailed) {
+      [self setState:kGMFPlayerStateError];
     // TODO(tensafefrogs): Better error handling: [self failWithError:[_playerItem error]];
   }
 }

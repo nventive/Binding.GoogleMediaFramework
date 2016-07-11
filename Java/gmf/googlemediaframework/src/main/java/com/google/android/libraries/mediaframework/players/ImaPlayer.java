@@ -244,8 +244,9 @@ public class ImaPlayer {
          */
         @Override
         public void onError(Exception e) {
-
-            //We do not handle errors
+            if (playbackListener != null) {
+                playbackListener.onError(e);
+            }
         }
 
         /**
