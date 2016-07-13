@@ -513,6 +513,19 @@ public class ImaPlayer {
     }
 
     /**
+     * Replay the video from the beginning.
+     */
+    public void replay() {
+        if (adPlayer != null) {
+            activePlayer = PlayerType.AD_PLAYER;
+            adPlayer.replay();
+        } else {
+            activePlayer = PlayerType.CONTENT_PLAYER;
+            contentPlayer.replay();
+        }
+    }
+
+    /**
      * Register to the lifecycle events of the activity so we can perform the appropriate actions
      * on the current player.
      */

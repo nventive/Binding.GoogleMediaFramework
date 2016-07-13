@@ -77,7 +77,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem copy "$(TargetDir)\*.*" "C:\nv\Cineplex Rec Room\Main\Sources\packages\GoogleMediaFramework.0.2.0.8943\lib\MonoAndroid"
+    <PostBuildEvent>rem copy "$(TargetDir)\*.*" "C:\nv\Components\Src\Libs\GoogleMediaFramework.0.2.0.9102\lib\MonoAndroid"
+rem copy "$(TargetDir)\*.*" "C:\nv\TriviaForGood\Main\packages\GoogleMediaFramework.0.2.0.9192\lib\MonoAndroid"
 rem copy "$(TargetDir)\*.*" "C:\nv\Cineplex Rec Room\Main\Sources\packages\GoogleMediaFramework.0.2.0.9102\lib\MonoAndroid"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

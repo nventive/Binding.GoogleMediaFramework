@@ -282,6 +282,11 @@ public class SimpleVideoPlayer {
     layerManager.getControl().start();
   }
 
+  public void replay() {
+    layerManager.getExoplayerWrapper().seekTo(0);
+    play();
+  }
+
   /**
    * Sets the color of the top chrome, bottom chrome, and background.
    * @param color a color derived from the @{link Color} class
