@@ -24,26 +24,25 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.libraries.mediaframework.R;
+import com.google.android.libraries.mediaframework.exoplayerextensions.ExoplayerWrapper;
 import com.google.android.libraries.mediaframework.exoplayerextensions.PlayerControlCallback;
 
 import java.lang.ref.WeakReference;
@@ -90,8 +89,7 @@ import java.util.Locale;
  *
  * <p>The view is defined in the layout file: res/layout/playback_control_layer.xml.
  */
-public class PlaybackControlLayer implements Layer, PlayerControlCallback {
-
+public class PlaybackControlLayer implements Layer, PlayerControlCallback, ExoplayerWrapper.PlaybackListener {
   /**
    * In order to imbue the {@link PlaybackControlLayer} with the ability make the player fullscreen,
    * a {@link PlaybackControlLayer.FullscreenCallback} must be assigned to it. The
@@ -207,6 +205,26 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   private static final int SHOW_PROGRESS = 2;
 
   /**
+   * State indicating the playbackControlButton is showing the PLAY icon
+   */
+  private static final int PLAY = 0;
+
+  /**
+   * State indicating the playbackControlButton is showing the PAUSE icon
+   */
+  private static final int PAUSE = 1;
+
+  /**
+   * State indicating the playbackControlButton is showing the REPLAY icon
+   */
+  private static final int REPLAY = 2;
+
+  /**
+   * Current state of the playbackControlButton (PLAY, PAUSE, REPLAY)
+   */
+  private int currentPlaybackControl;
+
+  /**
    * List of image buttons which are displayed in the right side of the top chrome.
    */
   private List<ImageButton> actionButtons;
@@ -230,6 +248,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * Whether the user can drag the seek bar thumb to seek.
    */
   private boolean canSeek;
+
+  /**
+   * Current playback state of ExoPlayer
+   */
+  private int playbackState;
 
   /**
    * The System UI Flags that are used to enter into a fullscreen immersive mode
@@ -349,7 +372,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   /**
    * Displays the play icon when the video is playing, or the pause icon when the video is playing.
    */
-  private ImageButton pausePlayButton;
+  private ImageButton playbackControlButton;
 
   /**
    * Displays a track and a thumb which can be used to seek to different time points in the video.
@@ -475,6 +498,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
         .getLayoutParams();
 
     layerManager.getControl().addCallback(this);
+    layerManager.getExoplayerWrapper().addListener(this);
 
     textColor = DEFAULT_TEXT_COLOR;
     chromeColor = DEFAULT_CHROME_COLOR;
@@ -681,7 +705,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       setupView();
       isVisible = true;
     }
-    updatePlayPauseButton();
+    updatePlaybackControlButton();
 
     handler.sendEmptyMessage(SHOW_PROGRESS);
 
@@ -749,7 +773,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   @Override
   public void onPause() {
-    updatePlayPauseButton();
+    updatePlaybackControlButton();
   }
 
   /**
@@ -757,7 +781,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   @Override
   public void onPlay() {
-    updatePlayPauseButton();
+    updatePlaybackControlButton();
     if (playCallback != null) {
       playCallback.onPlay();
     }
@@ -833,22 +857,27 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
   }
 
   /**
-   * Play or pause the player.
-   * @param shouldPlay If true, then the player starts playing. If false, the player pauses.
+   * Play, pause, or replay the player.
    */
-  public void setPlayPause(boolean shouldPlay) {
+  public void setPlaybackControl() {
     PlayerControl playerControl = getLayerManager().getControl();
     if (playerControl == null) {
       return;
     }
 
-    if (shouldPlay) {
-      playerControl.start();
-    } else {
-      playerControl.pause();
+    switch (currentPlaybackControl) {
+      case PLAY:
+        playerControl.start();
+        break;
+      case PAUSE:
+        playerControl.pause();
+        break;
+      case REPLAY:
+        playerControl.seekTo(0);
+        playerControl.start();
+        break;
     }
-
-    updatePlayPauseButton();
+    updatePlaybackControlButton();
   }
 
   /**
@@ -867,7 +896,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    */
   private void setupView() {
     // Bind fields to UI elements.
-    pausePlayButton = (ImageButton) view.findViewById(R.id.pause);
+    playbackControlButton = (ImageButton) view.findViewById(R.id.pause);
     fullscreenButton = (ImageButton) view.findViewById((R.id.fullscreen));
     seekBar = (SeekBar) view.findViewById(R.id.mediacontroller_progress);
     videoTitleView = (TextView) view.findViewById(R.id.video_title);
@@ -879,11 +908,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     bottomChrome = (LinearLayout) view.findViewById(R.id.bottom_chrome);
     actionButtonsContainer = (LinearLayout) view.findViewById(R.id.actions_container);
 
-    // The play button should toggle play/pause when the play/pause button is clicked.
-    pausePlayButton.setOnClickListener(new View.OnClickListener() {
+    // The button should toggle play/pause/replay when the button is clicked.
+    playbackControlButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        togglePlayPause();
+        setPlaybackControl();
         show(DEFAULT_TIMEOUT_MS);
       }
     });
@@ -933,7 +962,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
       public void onStopTrackingTouch(SeekBar seekBar) {
         isSeekbarDragging = false;
         updateProgress();
-        updatePlayPauseButton();
+        updatePlaybackControlButton();
         show(DEFAULT_TIMEOUT_MS);
 
         handler.sendEmptyMessage(SHOW_PROGRESS);
@@ -972,14 +1001,6 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     } else {
       return timeFormatter.format("%02d:%02d", minutes, seconds).toString();
     }
-  }
-
-  /**
-   * If the player is paused, play it and if the player is playing, pause it.
-   */
-  public void togglePlayPause() {
-    this.shouldBePlaying = !getLayerManager().getControl().isPlaying();
-    setPlayPause(shouldBePlaying);
   }
 
   /**
@@ -1054,7 +1075,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     videoTitleView.setTextColor(textColor);
 
     fullscreenButton.setColorFilter(controlColor);
-    pausePlayButton.setColorFilter(controlColor);
+    playbackControlButton.setColorFilter(controlColor);
     seekBar.getProgressDrawable().setColorFilter(seekbarColor, PorterDuff.Mode.SRC_ATOP);
     seekBar.getThumb().setColorFilter(seekbarColor, PorterDuff.Mode.SRC_ATOP);
 
@@ -1077,16 +1098,21 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
    * Change the icon of the play/pause button to indicate play or pause based on the state of the
    * video player.
    */
-  public void updatePlayPauseButton() {
+  public void updatePlaybackControlButton() {
     PlayerControl playerControl = getLayerManager().getControl();
-    if (view == null || pausePlayButton == null || playerControl == null) {
+    if (view == null || playbackControlButton == null || playerControl == null) {
       return;
     }
 
-    if (playerControl.isPlaying()) {
-      pausePlayButton.setImageResource(R.drawable.ic_action_pause_large);
+    if (playbackState == ExoPlayer.STATE_ENDED) {
+      playbackControlButton.setImageResource(R.drawable.ic_action_replay_large);
+      currentPlaybackControl = REPLAY;
+    } else if (playerControl.isPlaying()) {
+      playbackControlButton.setImageResource(R.drawable.ic_action_pause_large);
+      currentPlaybackControl = PAUSE;
     } else {
-      pausePlayButton.setImageResource(R.drawable.ic_action_play_large);
+      playbackControlButton.setImageResource(R.drawable.ic_action_play_large);
+      currentPlaybackControl = PLAY;
     }
   }
 
@@ -1133,11 +1159,28 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback {
     return position;
   }
 
-  public void setPausePlayVisibility(int visibility) {
-    if (pausePlayButton != null) {
-      pausePlayButton.setVisibility(visibility);
+  public void setPlaybackControlButtonVisibility(int visibility) {
+    if (playbackControlButton != null) {
+      playbackControlButton.setVisibility(visibility);
     }
   }
+
+  @Override
+  public void onStateChanged(boolean playWhenReady, int playbackState) {
+    this.playbackState = playbackState;
+    updatePlaybackControlButton();
+  }
+
+  @Override
+  public void onError(Exception e) {
+    //Do nothing
+  }
+
+  @Override
+  public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+    //Do nothing
+  }
+
   /**
    * Set play callback
    */
