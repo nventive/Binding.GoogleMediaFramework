@@ -162,6 +162,8 @@ public class ImaPlayer {
      */
     private PlaybackControlLayer.FullscreenCallback fullscreenCallback;
 
+    private PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback;
+
     private Application.ActivityLifecycleCallbacks lifecycleCallback;
 
     /**
@@ -420,6 +422,7 @@ public class ImaPlayer {
         this.container = builder.container;
         this.originalOrientation = this.activity.getRequestedOrientation();
         this.playbackListener = builder.playbackListener;
+        this.controlsLayerCallback = builder.controlsLayerCallback;
 
         if (builder.adTagUrl != null) {
             this.adTagUrl = Uri.parse(builder.adTagUrl);
@@ -444,6 +447,7 @@ public class ImaPlayer {
                 autoplay,
                 builder.showControls);
 
+        contentPlayer.setControlsLayerCallback(controlsLayerCallback);
         contentPlayer.addPlaybackListener(contentPlaybackListener);
         contentPlayer.setPlayCallback(new PlaybackControlLayer.PlayCallback() {
             @Override
@@ -751,6 +755,7 @@ public class ImaPlayer {
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         }
+        controlsLayerCallback = null;
         unregisterLifecycleCallback();
         adsLoader.contentComplete();
         contentPlayer.release();
@@ -786,7 +791,8 @@ public class ImaPlayer {
                 true,
                 false,
                 0,
-                fullscreenCallback);
+                fullscreenCallback,
+                controlsLayerCallback);
 
         adPlayer.addPlaybackListener(adPlaybackListener);
         activePlayer = PlayerType.AD_PLAYER;
@@ -924,6 +930,7 @@ public class ImaPlayer {
         private ImaSdkSettings sdkSettings;
         private String adTagUrl;
         private PlaybackControlLayer.FullscreenCallback fullscreenCallback;
+        private PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback;
         private ExoplayerWrapper.PlaybackListener playbackListener;
         private boolean showControls;
         private int loadingColor;
@@ -941,6 +948,7 @@ public class ImaPlayer {
             adTagUrl = null;
             sdkSettings = ImaSdkFactory.getInstance().createImaSdkSettings();
             fullscreenCallback = null;
+            controlsLayerCallback = null;
             playbackListener = null;
             showControls = true;
             loadingColor = 0;
@@ -968,6 +976,11 @@ public class ImaPlayer {
 
         public Builder setFullscreenCallback(PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
             this.fullscreenCallback = fullscreenCallback;
+            return this;
+        }
+
+        public Builder setControlsLayerCallback(PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback) {
+            this.controlsLayerCallback = controlsLayerCallback;
             return this;
         }
 

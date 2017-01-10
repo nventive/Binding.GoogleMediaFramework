@@ -112,6 +112,19 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   }
 
   /**
+   * The {@link PlaybackControlLayer.ControlsLayerCallback} implementation will be called when the
+   * controls layer (seekbar, play button, etc.) are being hidden/shown
+   */
+  public interface ControlsLayerCallback {
+
+    public void onControlsHiding();
+
+    public void onControlsHidden();
+
+    public void onControlsShown();
+  }
+
+  /**
    * The {@link PlaybackControlLayer.PlayCallback} implementation will be called when the player
    * plays the video (e.g. to request IMA ads) upon user taps on the play button.
    */
@@ -320,6 +333,8 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
    */
   private FullscreenCallback fullscreenCallback;
 
+  private ControlsLayerCallback controlsLayerCallback;
+
   private PlayCallback playCallback;
   /**
    * The message handler which deals with displaying progress and fading out the media controls
@@ -432,12 +447,13 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   private FrameLayout view;
 
   public PlaybackControlLayer(String videoTitle) {
-    this(videoTitle, null, true);
+    this(videoTitle, null, null, true);
   }
-  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, boolean showControls) {
+  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, ControlsLayerCallback controlsLayerCallback,boolean showControls) {
     this.videoTitle = videoTitle;
     this.canSeek = true;
     this.fullscreenCallback = fullscreenCallback;
+    this.controlsLayerCallback = controlsLayerCallback;
     this.shouldBePlaying = false;
     actionButtons = new ArrayList<ImageButton>();
     this.forceHidden = !showControls;
@@ -650,10 +666,16 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
           .setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+              if (controlsLayerCallback != null) {
+                controlsLayerCallback.onControlsHiding();
+              }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+              if (controlsLayerCallback != null) {
+                controlsLayerCallback.onControlsHidden();
+              }
               isFadingOut = false;
               playbackControlRootView.setVisibility(View.INVISIBLE);
               container.removeView(view);
@@ -691,6 +713,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
       playbackControlRootView.setAlpha(1.0f);
       // Make the view visible.
       playbackControlRootView.setVisibility(View.VISIBLE);
+      if (controlsLayerCallback != null) {
+        controlsLayerCallback.onControlsShown();
+      }
 
       updateProgress();
 
@@ -843,6 +868,14 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     if (fullscreenButton != null) {
       fullscreenButton.setVisibility(showFullscreenToggle ? View.VISIBLE : View.INVISIBLE);
     }
+  }
+
+  /**
+   * Set the callback which will be called when the player's controls are shown/hidden.
+   * @param controlsLayerCallback
+   */
+  public void setControlsLayerCallback(ControlsLayerCallback controlsLayerCallback) {
+    this.controlsLayerCallback = controlsLayerCallback;
   }
 
   /**

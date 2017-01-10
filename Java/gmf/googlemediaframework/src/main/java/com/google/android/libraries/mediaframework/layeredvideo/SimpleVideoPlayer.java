@@ -85,7 +85,7 @@ public class SimpleVideoPlayer {
                            String videoTitle,
                            boolean autoplay,
                            boolean showControls) {
-    this(activity, container, video, videoTitle, autoplay, showControls, 0, null);
+    this(activity, container, video, videoTitle, autoplay, showControls, 0, null, null);
   }
 
   /**
@@ -105,10 +105,11 @@ public class SimpleVideoPlayer {
                            boolean autoplay,
                            boolean showControls,
                            int startPostitionMs,
-                           PlaybackControlLayer.FullscreenCallback fullscreenCallback ) {
+                           PlaybackControlLayer.FullscreenCallback fullscreenCallback,
+                           PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback) {
     this.activity = activity;
 
-    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback, showControls);
+    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback, controlsLayerCallback,showControls);
     subtitleLayer = new SubtitleLayer();
     videoSurfaceLayer = new VideoSurfaceLayer(autoplay);
     loadingLayer = new LoadingLayer();
@@ -304,6 +305,14 @@ public class SimpleVideoPlayer {
    */
   public void setFullscreenCallback(PlaybackControlLayer.FullscreenCallback fullscreenCallback) {
     playbackControlLayer.setFullscreenCallback(fullscreenCallback);
+  }
+
+  /**
+   * Set the callback which will be called when the player's controls are shown/hidden
+   * @param controlsLayerCallback
+   */
+  public void setControlsLayerCallback(PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback) {
+    playbackControlLayer.setControlsLayerCallback(controlsLayerCallback);
   }
 
   /**
