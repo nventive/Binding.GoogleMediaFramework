@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleMediaFramework.Android", "GoogleMediaFramework.Android\GoogleMediaFramework.Android.csproj", "{47FCC4F0-24F7-4AA1-BF10-6BA7ABCCAF9C}"
 EndProject
@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A2FCF9AB
 		Build\build.proj = Build\build.proj
 		Build\GoogleMediaFramework.nuspec = Build\GoogleMediaFramework.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleMediaFramework.iOS", "GoogleMediaFramework.iOS\GoogleMediaFramework.iOS.csproj", "{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,20 +31,12 @@ Global
 		{0B0A4D7C-4EE0-4739-8D09-017E93825644}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B0A4D7C-4EE0-4739-8D09-017E93825644}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B0A4D7C-4EE0-4739-8D09-017E93825644}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs03.nventive.local:8080/tfs/umbrella
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = GoogleMediaFramework.Android\\GoogleMediaFramework.Android.csproj
-		SccProjectName1 = GoogleMediaFramework.Android
-		SccLocalPath1 = GoogleMediaFramework.Android
-		SccProjectUniqueName2 = GoogleMediaFramework.App.Android\\GoogleMediaFramework.App.Android.csproj
-		SccProjectName2 = GoogleMediaFramework.App.Android
-		SccLocalPath2 = GoogleMediaFramework.App.Android
 	EndGlobalSection
 EndGlobal
