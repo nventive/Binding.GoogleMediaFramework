@@ -29,7 +29,9 @@ extern NSString * const kGMFPlayerWillEnterFullscreen;
 extern NSString * const kGMFPlayerWillExitFullscreen;
 extern NSString * const kGMFPlayerPlaybackDidFinishReasonUserInfoKey;
 extern NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
-
+extern NSString * const kGMFPlayerControlsWillHideNotification;
+extern NSString * const kGMFPlayerControlsDidHideNotification;
+extern NSString * const kGMFPlayerControlsDidShowNotification;
 
 @interface GMFPlayerViewController : UIViewController<GMFVideoPlayerDelegate,
                                                       GMFPlayerOverlayViewControllerDelegate,

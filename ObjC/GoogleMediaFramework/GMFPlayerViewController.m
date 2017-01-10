@@ -38,6 +38,12 @@ NSString * const kGMFPlayerPlaybackDidFinishReasonUserInfoKey =
     @"kGMFPlayerPlaybackDidFinishReasonUserInfoKey";
 NSString * const kGMFPlayerPlaybackWillFinishReasonUserInfoKey =
     @"kGMFPlayerPlaybackWillFinishReasonUserInfoKey";
+NSString * const kGMFPlayerControlsWillHideNotification =
+    @"kGMFPlayerControlsWillHideNotification";
+NSString * const kGMFPlayerControlsDidHideNotification =
+    @"kGMFPlayerControlsDidHideNotification";
+NSString * const kGMFPlayerControlsDidShowNotification =
+    @"kGMFPlayerControlsDidShowNotification";
 
 // If there is no overlay view created yet, but we receive a request to create action button,
 // we store the request in a mutable array of dictionaries which we use to construct the the
@@ -169,6 +175,27 @@ NSString *const kActionButtonSelectorKey = @"kActionButtonSelectorKey";
     if (self.playerView){
         [self.playerView setOverlayView:[videoPlayerOverlayViewController playerOverlayView]];
     }
+}
+
+- (void)playerControlsWillHide {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:kGMFPlayerControlsWillHideNotification
+     object:self
+     userInfo:nil];
+}
+
+- (void)playerControlsDidHide {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:kGMFPlayerControlsDidHideNotification
+     object:self
+     userInfo:nil];
+}
+
+- (void)playerControlsDidShow {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:kGMFPlayerControlsDidShowNotification
+     object:self
+     userInfo:nil];
 }
 
 - (void)loadView {

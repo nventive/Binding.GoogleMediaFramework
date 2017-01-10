@@ -53,6 +53,15 @@ namespace GoogleMediaFramework
 		// extern NSString *const kGMFPlayerPlaybackWillFinishReasonUserInfoKey;
 		[Field("kGMFPlayerPlaybackWillFinishReasonUserInfoKey", "__Internal")]
 		NSString kGMFPlayerPlaybackWillFinishReasonUserInfoKey { get; }
+
+		[Field("kGMFPlayerControlsWillHideNotification", "__Internal")]
+		NSString kGMFPlayerControlsWillHideNotification { get; }
+
+		[Field("kGMFPlayerControlsDidHideNotification", "__Internal")]
+		NSString kGMFPlayerControlsDidHideNotification { get; }
+
+		[Field("kGMFPlayerControlsDidShowNotification", "__Internal")]
+		NSString kGMFPlayerControlsDidShowNotification { get; }
 	}
 
 	// @protocol GMFPlayerControlsViewDelegate <NSObject>
