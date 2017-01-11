@@ -20,14 +20,25 @@
 		<!-- Remove all the readonly attributes to avoid local generation issues -->
 		<Exec Command="attrib /s -r ..\*.*" />
 
-		<MSBuild Properties="Configuration=$(Configuration);VisualStudioVersion=14.0"
-				 Projects="..\GoogleMediaFramework.sln"
-				 RebaseOutputs="false"
-				 BuildInParallel="True" />
+		<CallTarget Targets="BuildiOS" Condition="'$(Configuration)'=='Release_iOS'" />
+		<CallTarget Targets="BuildAndroid" Condition="'$(Configuration)'=='Release_Android'" />
 
-		<!-- Nothing to build, we take the component directly -->
-		<CallTarget Targets="BuildNuGetPackage" />
+		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 
+	</Target>
+
+	<Target Name="BuildiOS">
+		<MSBuild Properties="Configuration=$(Configuration);Platform=$(Platform);VisualStudioVersion=14.0;$(MacBuildOptions)"
+						 Projects="..\GoogleMediaFramework.sln"
+						 RebaseOutputs="false"
+						 BuildInParallel="False" />
+	</Target>
+
+	<Target Name="BuildAndroid">
+		<MSBuild Properties="Configuration=$(Configuration);Platform=$(Platform);VisualStudioVersion=14.0"
+						 Projects="..\GoogleMediaFramework.sln"
+						 RebaseOutputs="false"
+						 BuildInParallel="False" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage">
