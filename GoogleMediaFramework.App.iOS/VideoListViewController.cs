@@ -170,10 +170,7 @@ namespace GoogleMediaFramework.App.iOS
 
 			//  _videoPlayerViewController?.DidPressMinimize();
 
-			_videoPlayerViewController = new GMFPlayerViewController()
-			{
-				ShouldHideControls = true,
-			};
+			_videoPlayerViewController = new GMFPlayerViewController();
 
 			_playbackDidFinishObserver = NSNotificationCenter.DefaultCenter.AddObserver(Constants.kGMFPlayerStateDidChangeToFinishedNotification,
 				PlaybackDidFinish);

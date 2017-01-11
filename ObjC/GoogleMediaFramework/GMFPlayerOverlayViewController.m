@@ -160,12 +160,17 @@ static const NSTimeInterval kAutoHideAnimationDelay = 2.0;
 - (void)playerControlsDidHide {
   // Override in a subclass to be notified when _autoHideView is hidden.
   [_videoPlayerOverlayViewControllerDelegate playerControlsDidHide];
-  [_delegate playerControlsDidHide];
+  if (_delegate && [_delegate respondsToSelector:@selector(playerControlsDidHide)]) {
+      [_delegate playerControlsDidHide];
+  }
+ 
 }
 
 - (void)playerControlsWillHide {
   // Override in a subclass to be notified when _autoHideView starts hiding.
-  [_delegate playerControlsWillHide];
+    if (_delegate && [_delegate respondsToSelector:@selector(playerControlsWillHide)]) {
+        [_delegate playerControlsWillHide];
+    }
   [_playerOverlayView setPlayerBarVisible:NO];
   _playerControlsHidden = YES;
 }
@@ -173,7 +178,9 @@ static const NSTimeInterval kAutoHideAnimationDelay = 2.0;
 - (void)playerControlsDidShow {
   // Override in a subclass to be notified when _autoHideView is shown.
   [_videoPlayerOverlayViewControllerDelegate playerControlsDidShow];
-  [_delegate playerControlsDidShow];
+    if (_delegate && [_delegate respondsToSelector:@selector(playerControlsDidShow)]) {
+        [_delegate playerControlsDidShow];
+    }
 }
 
 - (void)playerControlsWillShow {
