@@ -11,20 +11,27 @@
 		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
 
 		<MacServer>$(MacServerAddress)</MacServer>
-		<MacBuildOptions Condition="'$(Configuration)'=='Release_iOS'">ServerAddress=$(MacServerAddress);CopyIPAFromUNC=true;ServerUser=Admin;ContinueOnDisconnected=false;dSymFile=$(dSymFile)</MacBuildOptions>
+		<MacBuildOptions Condition="'$(Configuration)'=='Release_iOS'">ServerAddress=$(MacServerAddress);CopyIPAFromUNC=true;ServerUser=Admin;ContinueOnDisconnected=false</MacBuildOptions>
 	</PropertyGroup>
 
 	<Target Name="Build">
-		<Message Text="Buidling for $(Configuration) and $(Platform)" />
+		<Message Text="Building for $(Configuration) and $(Platform)" />
 
 		<!-- Remove all the readonly attributes to avoid local generation issues -->
 		<Exec Command="attrib /s -r ..\*.*" />
 
+		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release'" />
 		<CallTarget Targets="BuildiOS" Condition="'$(Configuration)'=='Release_iOS'" />
 		<CallTarget Targets="BuildAndroid" Condition="'$(Configuration)'=='Release_Android'" />
 
-		<CallTarget Targets="BuildNuGetPackage" />
+		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
+	</Target>
 
+	<Target Name="BuildCI">
+		<MSBuild Properties="Configuration=$(Configuration);Platform=$(Platform);VisualStudioVersion=14.0;$(MacBuildOptions)"
+						 Projects="..\GoogleMediaFramework.sln"
+						 RebaseOutputs="false"
+						 BuildInParallel="False" />
 	</Target>
 
 	<Target Name="BuildiOS">
