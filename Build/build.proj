@@ -3,7 +3,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<Revision>$(BUILD_BUILDNUMBER.Split('_')[2].TrimStart('0'))</Revision>
+		<Revision>$(BUILD_BUILDNUMBER.TrimStart('0'))</Revision>
 		<AppVersion>1.0.$(Revision).0</AppVersion>
 		<NuGetPackageVersion>1.0.$(Revision)$(NuGetSemVer)</NuGetPackageVersion>
 		<NuGetBin>.\nuget-3.4.4-rtm-final\NuGet.exe</NuGetBin>
