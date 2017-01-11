@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(Platform)\$(Configuration)</OutputPath>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0B0A4D7C-4EE0-4739-8D09-017E93825644}</ProjectGuid>
@@ -22,6 +23,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+  <CopyNuGetImplementations>True</CopyNuGetImplementations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,27 +93,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xamarin.Android.Support.v4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.23.0.1.3\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Ads, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Ads.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Ads.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Analytics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Analytics.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Analytics.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Base, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
+    </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -119,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />
-    <None Include="packages.config" />
+    <BundleResource Include="project.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
