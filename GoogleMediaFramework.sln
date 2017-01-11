@@ -11,9 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A2FCF9AB
 	ProjectSection(SolutionItems) = preProject
 		Build\build.proj = Build\build.proj
 		Build\GoogleMediaFramework.nuspec = Build\GoogleMediaFramework.nuspec
+		Build\GoogleMediaFrameworkForAdMob.nuspec = Build\GoogleMediaFrameworkForAdMob.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleMediaFramework.iOS", "GoogleMediaFramework.iOS\GoogleMediaFramework.iOS.csproj", "{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleMediaFrameworkAdMob.iOS", "GoogleMediaFrameworkAdMob.iOS\GoogleMediaFrameworkAdMob.iOS.csproj", "{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +38,10 @@ Global
 		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F06B9B98-F3A3-4DFE-9C4C-4100FFC24715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

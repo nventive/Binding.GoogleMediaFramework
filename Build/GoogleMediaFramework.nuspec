@@ -23,7 +23,7 @@
 		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.dll" target="lib\MonoAndroid" />
 		<file src="..\GoogleMediaFramework.Android\Bin\Release\GoogleMediaFramework.pdb" target="lib\MonoAndroid" />
 		<!-- iOS -->
-		<file src="..\ObjC\GoogleMediaFramework.dll" target="lib\Xamarin.iOS10" />
-		<file src="..\ObjC\GoogleMediaFramework.pdb" target="lib\Xamarin.iOS10" />
+		<file src="..\GoogleMediaFramework.iOS\Bin\Release\GoogleMediaFramework.dll" target="lib\Xamarin.iOS10" />
+		<file src="..\GoogleMediaFramework.iOS\Bin\Release\GoogleMediaFramework.pdb" target="lib\Xamarin.iOS10" />
 	</files>
 </package>

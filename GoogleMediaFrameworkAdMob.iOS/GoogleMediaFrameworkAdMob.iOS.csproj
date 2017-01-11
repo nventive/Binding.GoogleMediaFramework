@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{8FFB629D-F513-41CE-95D2-7ECE97B6EEEC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{9AC8A835-2EEF-495D-8980-F2D5DC6B5269}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>GoogleMediaFramework</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>GoogleMediaFramework</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Xamarin.iOS" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ObjcBindingApiDefinition Include="..\GoogleMediaFramework.iOS\ApiDefinition.cs">
+      <Link>ApiDefinition.cs</Link>
+    </ObjcBindingApiDefinition>
+    <Compile Include="..\GoogleMediaFramework.iOS\GMFContentPlayhead.cs">
+      <Link>GMFContentPlayhead.cs</Link>
+    </Compile>
+    <Compile Include="..\GoogleMediaFramework.iOS\GMFIMAAdService.cs">
+      <Link>GMFIMAAdService.cs</Link>
+    </Compile>
+    <Compile Include="..\GoogleMediaFramework.iOS\libGoogleMediaFrameworkSDK.linkwith.cs">
+      <Link>libGoogleMediaFrameworkSDK.linkwith.cs</Link>
+      <DependentUpon>libGoogleMediaFrameworkSDK.a</DependentUpon>
+    </Compile>
+    <ObjcBindingCoreSource Include="..\GoogleMediaFramework.iOS\StructsAndEnums.cs">
+      <Link>StructsAndEnums.cs</Link>
+    </ObjcBindingCoreSource>
+    <Compile Include="GoogleInteractiveMediaAds.linkwith.cs">
+      <DependentUpon>GoogleInteractiveMediaAds.a</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ObjcBindingNativeLibrary Include="..\GoogleMediaFramework.iOS\libGoogleMediaFrameworkSDK.a">
+      <Link>libGoogleMediaFrameworkSDK.a</Link>
+    </ObjcBindingNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
+    <ObjcBindingNativeLibrary Include="GoogleInteractiveMediaAds.a" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_close%402x.png">
+      <Link>Resources\player_control_close%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_maximize%402x.png">
+      <Link>Resources\player_control_maximize%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_minimize%402x.png">
+      <Link>Resources\player_control_minimize%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_pause%402x.png">
+      <Link>Resources\player_control_pause%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_pause_large%402x.png">
+      <Link>Resources\player_control_pause_large%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_play%402x.png">
+      <Link>Resources\player_control_play%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_play_large%402x.png">
+      <Link>Resources\player_control_play_large%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_replay%402x.png">
+      <Link>Resources\player_control_replay%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_control_replay_large%402x.png">
+      <Link>Resources\player_control_replay_large%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_controls_background%402x.png">
+      <Link>Resources\player_controls_background%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_controls_title_bar_background%402x.png">
+      <Link>Resources\player_controls_title_bar_background%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\GoogleMediaFramework.iOS\Resources\player_scrubber_thumb%402x.png">
+      <Link>Resources\player_scrubber_thumb%402x.png</Link>
+    </BundleResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.ObjCBinding.CSharp.targets" />
+</Project>
