@@ -54,20 +54,18 @@
 		<Exec Command="attrib -r .\GoogleMediaFramework.nuspec" />
 		<Exec Command="attrib -r .\GoogleMediaFrameworkForAdMob.nuspec" />
 
-		<XmlUpdate
-			XmlFileName=".\GoogleMediaFramework.nuspec"
-			XPath="/x:package/x:metadata/x:version"
+		<XmlPoke
+			XmlInputPath=".\GoogleMediaFramework.nuspec"
+			Query ="/x:package/x:metadata/x:version"
 			Value="$(NuGetPackageVersion)"
-			Namespace="$(NugetNamespace)"
-			Prefix="x"/>
+			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
 
-		<XmlUpdate
-			XmlFileName=".\GoogleMediaFrameworkForAdMob.nuspec"
-			XPath="/x:package/x:metadata/x:version"
+		<XmlPoke
+			XmlInputPath=".\GoogleMediaFrameworkForAdMob.nuspec"
+			Query ="/x:package/x:metadata/x:version"
 			Value="$(NuGetPackageVersion)"
-			Namespace="$(NugetNamespace)"
-			Prefix="x"/>
-
+			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
+		
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack GoogleMediaFramework.nuspec" />
 		<Exec Command="$(NuGetBin) pack GoogleMediaFrameworkForAdMob.nuspec" />
