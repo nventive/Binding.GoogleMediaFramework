@@ -23,7 +23,7 @@
 		<CallTarget Targets="BuildiOS" Condition="'$(Configuration)'=='Release_iOS'" />
 		<CallTarget Targets="BuildAndroid" Condition="'$(Configuration)'=='Release_Android'" />
 
-		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
+		<CallTarget Targets="BuildNuGetPackage" />
 
 	</Target>
 
