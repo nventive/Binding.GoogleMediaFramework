@@ -1031,7 +1031,7 @@ public class ImaPlayer {
             return this;
         }
 
-        public Builder setForceLandscapeOnFullscreen(boolean forceLandscapeOnFullscreen) {
+        public Builder forceLandscapeOnFullscreen(boolean forceLandscapeOnFullscreen) {
             this.forceLandscapeOnFullscreen = forceLandscapeOnFullscreen;
             return this;
         }
