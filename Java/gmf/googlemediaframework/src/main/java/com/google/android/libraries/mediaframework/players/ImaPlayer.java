@@ -192,6 +192,12 @@ public class ImaPlayer {
     private boolean backgroundPlaybackEnabled;
 
     /**
+     * A flag to indicate whether the app will be forced into Landscape
+     * when the video player enters fullscreen mode.
+     */
+    private boolean forceLandscapeOnFullscreen;
+
+    /**
      * Notifies callbacks when the ad finishes.
      */
     private final ExoplayerWrapper.PlaybackListener adPlaybackListener
@@ -423,6 +429,7 @@ public class ImaPlayer {
         this.originalOrientation = this.activity.getRequestedOrientation();
         this.playbackListener = builder.playbackListener;
         this.controlsLayerCallback = builder.controlsLayerCallback;
+        this.forceLandscapeOnFullscreen = builder.forceLandscapeOnFullscreen;
 
         if (builder.adTagUrl != null) {
             this.adTagUrl = Uri.parse(builder.adTagUrl);
@@ -445,7 +452,8 @@ public class ImaPlayer {
                 builder.video,
                 builder.videoTitle,
                 autoplay,
-                builder.showControls);
+                builder.showControls,
+                builder.forceLandscapeOnFullscreen);
 
         contentPlayer.setControlsLayerCallback(controlsLayerCallback);
         contentPlayer.addPlaybackListener(contentPlaybackListener);
@@ -701,7 +709,9 @@ public class ImaPlayer {
                 @Override
                 public void onReturnFromFullscreen() {
                     fullscreenCallback.onReturnFromFullscreen();
-                    activity.setRequestedOrientation(originalOrientation);
+                    if (forceLandscapeOnFullscreen) {
+                        activity.setRequestedOrientation(originalOrientation);
+                    }
                     container.setLayoutParams(originalContainerLayoutParams);
                 }
             };
@@ -747,7 +757,7 @@ public class ImaPlayer {
             adsManager = null;
         }
         if (this.activity != null) {
-            if (activity.getRequestedOrientation() != originalOrientation) {
+            if (activity.getRequestedOrientation() != originalOrientation && forceLandscapeOnFullscreen) {
                 activity.setRequestedOrientation(originalOrientation);
             }
             activity.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(null);
@@ -790,6 +800,7 @@ public class ImaPlayer {
                 "",
                 true,
                 false,
+                this.forceLandscapeOnFullscreen,
                 0,
                 fullscreenCallback,
                 controlsLayerCallback);
@@ -938,6 +949,7 @@ public class ImaPlayer {
         private boolean fullscreenToggleDisabled;
         private boolean isFullscreen;
         private boolean backgroundPlaybackEnabled;
+        private boolean forceLandscapeOnFullscreen;
 
         public Builder(Activity activity, FrameLayout container, Video video) {
             this.activity = activity;
@@ -1016,6 +1028,11 @@ public class ImaPlayer {
 
         public Builder setBackgroundPlaybackEnabled(boolean isEnabled) {
             this.backgroundPlaybackEnabled = isEnabled;
+            return this;
+        }
+
+        public Builder setForceLandscapeOnFullscreen(boolean forceLandscapeOnFullscreen) {
+            this.forceLandscapeOnFullscreen = forceLandscapeOnFullscreen;
             return this;
         }
     }

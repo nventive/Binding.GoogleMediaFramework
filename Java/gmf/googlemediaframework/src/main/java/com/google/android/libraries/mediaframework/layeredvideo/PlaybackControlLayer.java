@@ -268,6 +268,12 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   private int playbackState;
 
   /**
+   * A flag to indicate whether the app will be forced into Landscape
+   * when the video player enters fullscreen mode.
+   */
+  private boolean forceLandscapeOnFullscreen;
+
+  /**
    * The System UI Flags that are used to enter into a fullscreen immersive mode
    */
   private final int fullscreenUiFlags =
@@ -447,9 +453,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   private FrameLayout view;
 
   public PlaybackControlLayer(String videoTitle) {
-    this(videoTitle, null, null, true);
+    this(videoTitle, null, null, true, false);
   }
-  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, ControlsLayerCallback controlsLayerCallback,boolean showControls) {
+  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, ControlsLayerCallback controlsLayerCallback, boolean showControls, boolean forceLandscapeOnFullscreen) {
     this.videoTitle = videoTitle;
     this.canSeek = true;
     this.fullscreenCallback = fullscreenCallback;
@@ -457,6 +463,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     this.shouldBePlaying = false;
     actionButtons = new ArrayList<ImageButton>();
     this.forceHidden = !showControls;
+    this.forceLandscapeOnFullscreen = forceLandscapeOnFullscreen;
   }
 
   /**
@@ -595,8 +602,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
       if (fullscreenCallback != null) {
         fullscreenCallback.onGoToFullscreen();
       }
-      activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-
+      if (forceLandscapeOnFullscreen) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+      }
       //Ensure the activity is not currently forcing the window into not fullscreen
       activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
       activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
