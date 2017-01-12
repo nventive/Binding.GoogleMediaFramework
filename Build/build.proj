@@ -11,7 +11,7 @@
 		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
 
 		<MacServer>$(MacServerAddress)</MacServer>
-		<MacBuildOptions>ServerAddress=$(MacServerAddress);CopyIPAFromUNC=true;ServerUser=Admin;ContinueOnDisconnected=true</MacBuildOptions>
+		<MacBuildOptions>ServerAddress=$(MacServerAddress);ServerUser=Admin;ContinueOnDisconnected=true</MacBuildOptions>
 	</PropertyGroup>
 
 	<Target Name="Build">
