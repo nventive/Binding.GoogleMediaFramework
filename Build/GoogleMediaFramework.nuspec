@@ -10,8 +10,8 @@
 		<description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android / https://github.com/googleads/google-media-framework-ios) </description>
 		<dependencies>		
 			<group targetFramework="MonoAndroid">
-				<dependency id="Xamarin.GooglePlayServices.Ads" version="25.0.0.0"  />
-				<dependency id="Xamarin.GooglePlayServices.Analytics" version="25.0.0.0"  />
+				<dependency id="Xamarin.GooglePlayServices.Ads" version="29.0.0.2"  />
+				<dependency id="Xamarin.GooglePlayServices.Analytics" version="29.0.0.2"  />
 			</group>
 		</dependencies>		
 		<references>

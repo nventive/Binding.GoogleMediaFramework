@@ -1,15 +1,15 @@
 ﻿{
   "dependencies": {
-	"Xamarin.Android.Support.v4": "23.0.1.1",
-	"Xamarin.GooglePlayServices.Ads": "25.0.0.0",
-	"Xamarin.GooglePlayServices.Analytics": "25.0.0.0",
-	"Xamarin.GooglePlayServices.Base": "25.0.0.0"
+    "Xamarin.Android.Support.v4": "23.0.1.1",
+    "Xamarin.GooglePlayServices.Ads": "29.0.0.2",
+    "Xamarin.GooglePlayServices.Analytics": "29.0.0.2",
+    "Xamarin.GooglePlayServices.Base": "29.0.0.2"
   },
   "frameworks": {
-	"MonoAndroid,Version=6.0": {}
+    "MonoAndroid,Version=6.0": {}
   },
   "runtimes": {
-	"win": {}
+    "win": {}
   },
   "supports": {}
 }
