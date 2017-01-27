@@ -166,7 +166,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
       int pos;
       switch (msg.what) {
         case FADE_OUT:
-          layer.hide();
+          if (layer.playbackState != ExoPlayer.STATE_ENDED) {
+            layer.hide();
+          }
           break;
         case SHOW_PROGRESS:
           pos = layer.updateProgress();
@@ -537,7 +539,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     getLayerManager().getContainer().setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (isVisible) {
+        if (isVisible && playbackState != ExoPlayer.STATE_ENDED) {
           hide();
         } else {
           show();
@@ -666,7 +668,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
       return;
     }
 
-    if (isVisible) {
+    if (isVisible && playbackState != ExoPlayer.STATE_ENDED) {
       isFadingOut = true;
       playbackControlRootView.animate()
           .alpha(0.0f)
@@ -747,6 +749,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     if (timeout > 0) {
       handler.sendMessageDelayed(msg, timeout);
     }
+
   }
 
   /**
@@ -1209,7 +1212,12 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   @Override
   public void onStateChanged(boolean playWhenReady, int playbackState) {
     this.playbackState = playbackState;
-    updatePlaybackControlButton();
+    if (playbackState == ExoPlayer.STATE_ENDED) {
+      handler.removeMessages(FADE_OUT);
+      show();
+    } else {
+      updatePlaybackControlButton();
+    }
   }
 
   @Override
