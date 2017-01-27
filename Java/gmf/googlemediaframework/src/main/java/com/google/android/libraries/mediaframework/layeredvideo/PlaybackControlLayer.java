@@ -794,7 +794,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   public void setIsFullscreenToggleVisible(boolean shouldShowFullscreen) {
     this.showFullscreenToggle = shouldShowFullscreen;
     if (this.showFullscreenToggle && fullscreenButton != null) {
-      fullscreenButton.setVisibility(View.INVISIBLE);
+      fullscreenButton.setVisibility(View.GONE);
     }
   }
 
@@ -874,7 +874,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   public void setFullscreenCallback(FullscreenCallback fullscreenCallback) {
     this.fullscreenCallback = fullscreenCallback;
     if (fullscreenButton != null) {
-      fullscreenButton.setVisibility(showFullscreenToggle ? View.VISIBLE : View.INVISIBLE);
+      fullscreenButton.setVisibility(showFullscreenToggle ? View.VISIBLE : View.GONE);
     }
   }
 
@@ -959,7 +959,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     });
 
     if (!showFullscreenToggle) {
-      fullscreenButton.setVisibility(View.INVISIBLE);
+      fullscreenButton.setVisibility(View.GONE);
     }
     // Go into fullscreen when the fullscreen button is clicked.
     fullscreenButton.setOnClickListener(new View.OnClickListener() {
