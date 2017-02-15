@@ -545,7 +545,7 @@ public class ImaPlayer {
 
                     @Override
                     public void onActivityResumed(Activity activity) {
-                        resume();
+                        //Do nothing.
                     }
 
                     @Override
