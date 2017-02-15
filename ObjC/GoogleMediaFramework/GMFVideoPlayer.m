@@ -139,14 +139,22 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
                                     GMFAudioRouteChangeListenerCallback,
                                     (__bridge void *)self);
 
-      [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-      // Handles interruptions to playback, like phone calls and activating Siri.
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    // Handles interruptions to playback, like phone calls and activating Siri.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onAudioSessionInterruption:)
                                                  name:AVAudioSessionInterruptionNotification
                                                object:[AVAudioSession sharedInstance]];
-  }
+      
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(onWillResignActive:)
+                                                name:UIApplicationWillResignActiveNotification
+                                                object:nil];  }
   return self;
+}
+
+- (void)onWillResignActive:(NSNotification*)notif {
+    [self pause];
 }
 
 #pragma mark Public playback methods
@@ -350,23 +358,7 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
 #pragma mark AVAudioSession notifications
 
 - (void)onAudioSessionInterruption:(NSNotification *)notification {
-  NSDictionary *userInfo = [notification userInfo];
-  AVAudioSessionInterruptionType type =
-      [(NSNumber *)[userInfo valueForKey:AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
-  NSUInteger flags =
-      [(NSNumber *)[userInfo valueForKey:AVAudioSessionInterruptionOptionKey] unsignedIntegerValue];
-  // It seems like we don't receive the InterruptionTypeBegan
-  // event properly. This might be an iOS bug:
-  // http://openradar.appspot.com/12412685
-  //
-  // So instead we try to detect if the player was manually paused by invoking
-  // pause, and only resume if the player was not manually paused.
-  if (type == AVAudioSessionInterruptionTypeEnded &&
-      flags & AVAudioSessionInterruptionOptionShouldResume &&
-      _state == kGMFPlayerStatePaused &&
-      !_manuallyPaused) {
-    [self play];
-  }
+    [self pause];
 }
 
 - (void)dealloc {
