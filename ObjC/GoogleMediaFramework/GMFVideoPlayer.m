@@ -139,17 +139,17 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
                                     GMFAudioRouteChangeListenerCallback,
                                     (__bridge void *)self);
 
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-    // Handles interruptions to playback, like phone calls and activating Siri.
+      [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+      // Handles interruptions to playback, like phone calls and activating Siri.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onAudioSessionInterruption:)
                                                  name:AVAudioSessionInterruptionNotification
                                                object:[AVAudioSession sharedInstance]];
       
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(onWillResignActive:)
-                                                name:UIApplicationWillResignActiveNotification
-                                                object:nil];  }
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(onWillResignActive:)
+                                                   name:UIApplicationWillResignActiveNotification
+                                                 object:nil];  }
   return self;
 }
 
@@ -429,11 +429,6 @@ void GMFAudioRouteChangeListenerCallback(void *inClientData,
   [self updateStateAndReportMediaTimes];
   [self stopPlaybackStatusPoller];
   [self setState:kGMFPlayerStateFinished];
-  // For HLS videos, the rate isn't set to 0 on video end, so we have to do it
-  // explicitly.
-  if ([_player rate]) {
-    [_player setRate:0];
-  }
 }
 
 - (BOOL)isPlayableState {
