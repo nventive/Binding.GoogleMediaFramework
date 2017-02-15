@@ -539,7 +539,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     getLayerManager().getContainer().setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (isVisible && playbackState != ExoPlayer.STATE_ENDED) {
+        if (isVisible) {
           hide();
         } else {
           show();
@@ -668,7 +668,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
       return;
     }
 
-    if (isVisible && playbackState != ExoPlayer.STATE_ENDED) {
+    if (isVisible) {
       isFadingOut = true;
       playbackControlRootView.animate()
           .alpha(0.0f)
