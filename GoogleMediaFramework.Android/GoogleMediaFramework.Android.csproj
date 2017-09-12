@@ -1,102 +1,109 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(Platform)\$(Configuration)</OutputPath>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47FCC4F0-24F7-4AA1-BF10-6BA7ABCCAF9C}</ProjectGuid>
-    <ProjectTypeGuids>{10368E6C-D01B-4462-8E8B-01FC667A7035};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleMediaFramework.Android</RootNamespace>
-    <AssemblyName>GoogleMediaFramework</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>8900, 108, 114, 628, 618</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>8604, 108, 114, 628, 618</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_iOS|AnyCPU'">
-    <OutputPath>bin\Release_iOS\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>8604, 108, 114, 628, 618</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_Android|AnyCPU'">
-    <OutputPath>bin\Release_Android\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>8604, 108, 114, 628, 618</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Mono.Android" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+	<PropertyGroup>
+		<AssemblyName>GoogleMediaFramework</AssemblyName>
+		<TargetFrameworks>MonoAndroid60;MonoAndroid70;MonoAndroid71</TargetFrameworks>
+		<NoWarn>$(NoWarn);1998</NoWarn>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<EnableDefaultItems>false</EnableDefaultItems>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid60'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+		<DebugType>full</DebugType>
+		<DefineConstants>$(DefineConstants);MONOANDROID6_0;XAMARIN_ANDROID</DefineConstants>
+		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid70'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+		<DebugType>full</DebugType>
+		<DefineConstants>$(DefineConstants);MONOANDROID7_0;XAMARIN_ANDROID</DefineConstants>
+		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid71'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+		<DebugType>full</DebugType>
+		<DefineConstants>$(DefineConstants);MONOANDROID7_1;XAMARIN_ANDROID</DefineConstants>
+		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+		<Reference Include="Mono.Android" />
+		<Reference Include="System" />
+		<Reference Include="System.Collections" />
+		<Reference Include="System.Threading.Tasks" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Runtime" />
+		<Reference Include="System.Threading.Tasks" />
+		<Reference Include="System.IdentityModel" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Runtime.Serialization" />
+		<Reference Include="System.Xml" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>23.1.1.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Ads">
+			<Version>29.0.0.2</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Analytics">
+			<Version>29.0.0.2</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid71'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>25.3.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Ads">
+			<Version>42.1021.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Analytics">
+			<Version>42.1021.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- Workaround for dependencies for head projects -->
+	<Target Name="GetBuiltProjectOutputRecursive" Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS'"></Target>
+	
   <ItemGroup>
     <Compile Include="Additions\ExoplayerWrapper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Include="Transforms\EnumFields.xml" />
+		<None Include="Transforms\EnumMethods.xml" />
+		<None Include="Transforms\Metadata.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Jars\AboutJars.txt" />
     <None Include="Additions\AboutAdditions.txt" />
+    <None Include="Jars\gmf.aar" />
     <LibraryProjectZip Include="Jars\gmf.aar" />
-    <BundleResource Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <TransformFile Include="Transforms\Metadata.xml" />
     <TransformFile Include="Transforms\EnumFields.xml" />
     <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>rem copy "$(TargetDir)\*.*" "C:\nv\Components\Src\Libs\GoogleMediaFramework.0.2.0.9102\lib\MonoAndroid"
-rem copy "$(TargetDir)\*.*" "C:\nv\TriviaForGood\Main\packages\GoogleMediaFramework.0.2.0.9192\lib\MonoAndroid"
-rem copy "$(TargetDir)\*.*" "C:\nv\Cineplex Rec Room\Main\Sources\packages\GoogleMediaFramework.0.2.0.9102\lib\MonoAndroid"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
 </Project>

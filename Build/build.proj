@@ -3,10 +3,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<Revision>$(BUILD_BUILDNUMBER.TrimStart('0'))</Revision>
-		<AppVersion>1.0.$(Revision).0</AppVersion>
-		<NuGetPackageVersion>1.0.$(Revision)</NuGetPackageVersion>
-		<NuGetBin>..\packages\nuget-3.4.4-rtm-final\NuGet.exe</NuGetBin>
 		<Configuration>$(CombinedConfiguration.Split('|')[0])</Configuration>
 		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
 
@@ -17,14 +13,9 @@
 	<Target Name="Build">
 		<Message Text="Building for $(Configuration) and $(Platform)" />
 
-		<!-- Remove all the readonly attributes to avoid local generation issues -->
-		<Exec Command="attrib /s -r ..\*.*" />
-
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release'" />
 		<CallTarget Targets="BuildiOS" Condition="'$(Configuration)'=='Release_iOS'" />
 		<CallTarget Targets="BuildAndroid" Condition="'$(Configuration)'=='Release_Android'" />
-
-		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
 
 	<Target Name="BuildCI">
@@ -46,40 +37,6 @@
 						 Projects="..\GoogleMediaFramework.sln"
 						 RebaseOutputs="false"
 						 BuildInParallel="False" />
-	</Target>
-
-	<Target Name="BuildNuGetPackage">
-		<PropertyGroup>
-			<NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
-		</PropertyGroup>
-
-
-		<Message Condition="'$(PublishNuget)'!=''" Text="NuGet package publishing is ENABLED (Target: $(NuGetRepositoryPath))" />
-		<Message Condition="'$(PublishNuget)'==''" Text="NuGet package publishing is DISABLED (Target: $(NuGetRepositoryPath))" />
-
-		<!-- Update the assembly versions -->
-		<Exec Command="attrib -r .\GoogleMediaFramework.nuspec" />
-		<Exec Command="attrib -r .\GoogleMediaFrameworkForAdMob.nuspec" />
-
-		<XmlPoke
-			XmlInputPath=".\GoogleMediaFramework.nuspec"
-			Query ="/x:package/x:metadata/x:version"
-			Value="$(NuGetPackageVersion)"
-			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
-
-		<XmlPoke
-			XmlInputPath=".\GoogleMediaFrameworkForAdMob.nuspec"
-			Query ="/x:package/x:metadata/x:version"
-			Value="$(NuGetPackageVersion)"
-			Namespaces="&lt;Namespace Prefix='x' Uri='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd' /&gt;" />
-		
-		<!-- Create the packages -->
-		<Exec Command="$(NuGetBin) pack GoogleMediaFramework.nuspec" />
-		<Exec Command="$(NuGetBin) pack GoogleMediaFrameworkForAdMob.nuspec" />
-
-		<!-- Publish the new packages -->
-		<!--Done in build definition task-->
-
 	</Target>
 
 </Project>
