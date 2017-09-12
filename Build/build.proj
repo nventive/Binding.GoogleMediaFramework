@@ -7,7 +7,7 @@
 		<Platform>$(CombinedConfiguration.Split('|')[1])</Platform>
 
 		<MacServer>$(MacServerAddress)</MacServer>
-		<MacBuildOptions>ServerAddress=$(MacServerAddress);ServerUser=Admin;ContinueOnDisconnected=true</MacBuildOptions>
+		<MacBuildOptions>ServerAddress=$(MacServerAddress);ServerUser=Admin</MacBuildOptions>
 	</PropertyGroup>
 
 	<Target Name="Build">
