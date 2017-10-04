@@ -198,6 +198,11 @@ public class ImaPlayer {
     private boolean forceLandscapeOnFullscreen;
 
     /**
+     * Whether the replay functionality is enabled.
+     */
+    private boolean isReplayEnabled;
+
+    /**
      * Notifies callbacks when the ad finishes.
      */
     private final ExoplayerWrapper.PlaybackListener adPlaybackListener
@@ -430,6 +435,7 @@ public class ImaPlayer {
         this.playbackListener = builder.playbackListener;
         this.controlsLayerCallback = builder.controlsLayerCallback;
         this.forceLandscapeOnFullscreen = builder.forceLandscapeOnFullscreen;
+        this.isReplayEnabled = builder.isReplayEnabled;
 
         if (builder.adTagUrl != null) {
             this.adTagUrl = Uri.parse(builder.adTagUrl);
@@ -453,7 +459,8 @@ public class ImaPlayer {
                 builder.videoTitle,
                 autoplay,
                 builder.showControls,
-                builder.forceLandscapeOnFullscreen);
+                builder.forceLandscapeOnFullscreen,
+                builder.isReplayEnabled);
 
         contentPlayer.setControlsLayerCallback(controlsLayerCallback);
         contentPlayer.addPlaybackListener(contentPlaybackListener);
@@ -801,6 +808,7 @@ public class ImaPlayer {
                 true,
                 false,
                 this.forceLandscapeOnFullscreen,
+                this.isReplayEnabled,
                 0,
                 fullscreenCallback,
                 controlsLayerCallback);
@@ -950,6 +958,7 @@ public class ImaPlayer {
         private boolean isFullscreen;
         private boolean backgroundPlaybackEnabled;
         private boolean forceLandscapeOnFullscreen;
+        private boolean isReplayEnabled;
 
         public Builder(Activity activity, FrameLayout container, Video video) {
             this.activity = activity;
@@ -965,6 +974,7 @@ public class ImaPlayer {
             showControls = true;
             loadingColor = 0;
             seekbarColor = 0;
+            isReplayEnabled = true;
         }
 
         public ImaPlayer build() {
@@ -1033,6 +1043,11 @@ public class ImaPlayer {
 
         public Builder forceLandscapeOnFullscreen(boolean forceLandscapeOnFullscreen) {
             this.forceLandscapeOnFullscreen = forceLandscapeOnFullscreen;
+            return this;
+        }
+
+        public Builder setIsReplayEnabled(boolean isReplayEnabled) {
+            this.isReplayEnabled = isReplayEnabled;
             return this;
         }
     }
