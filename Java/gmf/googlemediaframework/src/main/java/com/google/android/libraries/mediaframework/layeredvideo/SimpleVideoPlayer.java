@@ -85,8 +85,9 @@ public class SimpleVideoPlayer {
                            String videoTitle,
                            boolean autoplay,
                            boolean showControls,
-                           boolean forceLandscapeOnFullscreen) {
-    this(activity, container, video, videoTitle, autoplay, showControls, forceLandscapeOnFullscreen, 0, null, null);
+                           boolean forceLandscapeOnFullscreen,
+                           boolean isReplayEnabled) {
+    this(activity, container, video, videoTitle, autoplay, showControls, forceLandscapeOnFullscreen, isReplayEnabled, 0, null, null);
   }
 
   /**
@@ -106,12 +107,13 @@ public class SimpleVideoPlayer {
                            boolean autoplay,
                            boolean showControls,
                            boolean forceLandscapeOnFullscreen,
+                           boolean isReplayEnabled,
                            int startPostitionMs,
                            PlaybackControlLayer.FullscreenCallback fullscreenCallback,
                            PlaybackControlLayer.ControlsLayerCallback controlsLayerCallback) {
     this.activity = activity;
 
-    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback, controlsLayerCallback, showControls, forceLandscapeOnFullscreen);
+    playbackControlLayer = new PlaybackControlLayer(videoTitle, fullscreenCallback, controlsLayerCallback, showControls, forceLandscapeOnFullscreen, isReplayEnabled);
     subtitleLayer = new SubtitleLayer();
     videoSurfaceLayer = new VideoSurfaceLayer(autoplay);
     loadingLayer = new LoadingLayer();

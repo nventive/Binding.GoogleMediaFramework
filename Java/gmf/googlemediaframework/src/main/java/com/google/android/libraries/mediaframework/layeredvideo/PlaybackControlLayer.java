@@ -250,6 +250,11 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   private boolean isVisible;
 
   /**
+   * Whether the replay functionality is enabled.
+   */
+  private boolean isReplayEnabled;
+
+  /**
    * Whether the playback control layer should forcibly be hidden.
    */
   private boolean forceHidden;
@@ -455,9 +460,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   private FrameLayout view;
 
   public PlaybackControlLayer(String videoTitle) {
-    this(videoTitle, null, null, true, false);
+    this(videoTitle, null, null, true, false, true);
   }
-  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, ControlsLayerCallback controlsLayerCallback, boolean showControls, boolean forceLandscapeOnFullscreen) {
+  public PlaybackControlLayer(String videoTitle, FullscreenCallback fullscreenCallback, ControlsLayerCallback controlsLayerCallback, boolean showControls, boolean forceLandscapeOnFullscreen, boolean isReplayEnabled) {
     this.videoTitle = videoTitle;
     this.canSeek = true;
     this.fullscreenCallback = fullscreenCallback;
@@ -466,6 +471,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     actionButtons = new ArrayList<ImageButton>();
     this.forceHidden = !showControls;
     this.forceLandscapeOnFullscreen = forceLandscapeOnFullscreen;
+    this.isReplayEnabled = isReplayEnabled;
   }
 
   /**
@@ -1149,8 +1155,10 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
     }
 
     if (playbackState == ExoPlayer.STATE_ENDED) {
-      playbackControlButton.setImageResource(R.drawable.ic_action_replay_large);
-      currentPlaybackControl = REPLAY;
+      if (isReplayEnabled) {
+        playbackControlButton.setImageResource(R.drawable.ic_action_replay_large);
+        currentPlaybackControl = REPLAY;
+      }
     } else if (playerControl.isPlaying()) {
       playbackControlButton.setImageResource(R.drawable.ic_action_pause_large);
       currentPlaybackControl = PAUSE;
