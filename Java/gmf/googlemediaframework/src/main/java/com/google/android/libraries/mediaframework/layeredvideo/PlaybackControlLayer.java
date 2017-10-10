@@ -20,12 +20,15 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +92,15 @@ import java.util.Locale;
  *
  * <p>The view is defined in the layout file: res/layout/playback_control_layer.xml.
  */
-public class PlaybackControlLayer implements Layer, PlayerControlCallback, ExoplayerWrapper.PlaybackListener {
+public class PlaybackControlLayer implements Layer, PlayerControlCallback, ExoplayerWrapper.PlaybackListener, BecomingNoisyReceiver.IBecomingNoisyReceiverListener {
+  @Override
+  public void onBecomingNoisy() {
+    PlayerControl playerControl = getLayerManager().getControl();
+    if (playerControl != null) {
+      playerControl.pause();
+    }
+  }
+
   /**
    * In order to imbue the {@link PlaybackControlLayer} with the ability make the player fullscreen,
    * a {@link PlaybackControlLayer.FullscreenCallback} must be assigned to it. The
@@ -459,6 +470,9 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
    */
   private FrameLayout view;
 
+  private IntentFilter audioNoisyIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+  private BecomingNoisyReceiver becomingNoisyReceiver = new BecomingNoisyReceiver(this);
+
   public PlaybackControlLayer(String videoTitle) {
     this(videoTitle, null, null, true, false, true);
   }
@@ -816,6 +830,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   @Override
   public void onPause() {
     updatePlaybackControlButton();
+    getLayerManager().getActivity().getApplicationContext().unregisterReceiver(becomingNoisyReceiver);
   }
 
   /**
@@ -825,6 +840,7 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   public void onPlay() {
     updatePlaybackControlButton();
     if (playCallback != null) {
+      getLayerManager().getActivity().getApplicationContext().registerReceiver(becomingNoisyReceiver, audioNoisyIntentFilter);
       playCallback.onPlay();
     }
   }
