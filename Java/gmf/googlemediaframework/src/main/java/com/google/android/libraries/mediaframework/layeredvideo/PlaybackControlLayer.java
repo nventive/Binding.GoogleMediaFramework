@@ -830,7 +830,15 @@ public class PlaybackControlLayer implements Layer, PlayerControlCallback, Exopl
   @Override
   public void onPause() {
     updatePlaybackControlButton();
-    getLayerManager().getActivity().getApplicationContext().unregisterReceiver(becomingNoisyReceiver);
+
+    // There is no way to check whether the receiver is registered before unregistering it. The
+    // workaround is to unregisterReceiver and handle the IllegalArgumentException.
+    try {
+      getLayerManager().getActivity().getApplicationContext().unregisterReceiver(becomingNoisyReceiver);
+    } catch(IllegalArgumentException e)
+    {
+      // Do nothing. This exception is thrown when the receiver is already unregistered.
+    }
   }
 
   /**
