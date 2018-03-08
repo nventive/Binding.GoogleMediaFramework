@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<AssemblyName>GoogleMediaFramework</AssemblyName>
-		<TargetFrameworks>MonoAndroid60;MonoAndroid70;MonoAndroid71</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid60;MonoAndroid70;MonoAndroid71;MonoAndroid80</TargetFrameworks>
 		<NoWarn>$(NoWarn);1998</NoWarn>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<EnableDefaultItems>false</EnableDefaultItems>
@@ -31,6 +31,15 @@
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
 		<DebugType>full</DebugType>
 		<DefineConstants>$(DefineConstants);MONOANDROID7_1;XAMARIN_ANDROID</DefineConstants>
+		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+		<DebugType>full</DebugType>
+		<DefineConstants>$(DefineConstants);MONOANDROID8_0;XAMARIN_ANDROID</DefineConstants>
 		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	</PropertyGroup>
@@ -76,6 +85,21 @@
 		</PackageReference>
 		<PackageReference Include="Xamarin.GooglePlayServices.Analytics">
 			<Version>42.1021.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
+		<PackageReference Include="Xamarin.Android.Support.v4">
+			<Version>26.1.0.1</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Ads">
+			<Version>60.1142.0</Version>
+			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.GooglePlayServices.Analytics">
+			<Version>60.1142.0</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
