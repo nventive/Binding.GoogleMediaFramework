@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>GoogleMediaFrameworkForAdMob</id>
+		<id>nventive.GoogleMediaFrameworkForAdMob.Xamarin</id>
 		<version>0.2.0</version>
 		<title>Xamarin Binding for Google Media Framework for AdMob</title>
 		<authors>nventive</authors>
-		<owners />
+		<owners>nventive</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android / https://github.com/googleads/google-media-framework-ios). This package is built specifically for use when your project also includes the Google AdMob SDK. </description>
 		<dependencies>
