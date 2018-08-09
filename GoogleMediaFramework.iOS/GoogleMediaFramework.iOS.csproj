@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>GoogleMediaFramework</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>GoogleMediaFramework</AssemblyName>
+    <AssemblyName>GoogleMediaFramework.iOS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -114,6 +114,13 @@
   </ItemGroup>
   <ItemGroup>
     <ObjcBindingNativeLibrary Include="libGoogleMediaFrameworkSDK.a" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitVersionTask">
+      <Version>4.0.0-beta0012</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.ObjCBinding.CSharp.targets" />
 </Project>

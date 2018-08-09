@@ -1,63 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<AssemblyName>GoogleMediaFramework</AssemblyName>
+		<AssemblyName>GoogleMediaFramework.Android</AssemblyName>
 		<TargetFrameworks>MonoAndroid60;MonoAndroid70;MonoAndroid71;MonoAndroid80</TargetFrameworks>
 		<NoWarn>$(NoWarn);1998</NoWarn>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<EnableDefaultItems>false</EnableDefaultItems>
+		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+		<DebugType Condition="'$(Configuration)'=='Debug'">full</DebugType>
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<OutputPath>bin/$(Configuration)/$(TargetFramework)</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid60'">
 		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
 		<TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
-		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<DebugType>full</DebugType>
 		<DefineConstants>$(DefineConstants);MONOANDROID6_0;XAMARIN_ANDROID</DefineConstants>
-		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid70'">
 		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
 		<TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
-		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<DebugType>full</DebugType>
 		<DefineConstants>$(DefineConstants);MONOANDROID7_0;XAMARIN_ANDROID</DefineConstants>
-		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid71'">
 		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
 		<TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
-		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<DebugType>full</DebugType>
 		<DefineConstants>$(DefineConstants);MONOANDROID7_1;XAMARIN_ANDROID</DefineConstants>
-		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
 		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
 		<TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
-		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<DebugType>full</DebugType>
 		<DefineConstants>$(DefineConstants);MONOANDROID8_0;XAMARIN_ANDROID</DefineConstants>
-		<LanguageTargets>$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets</LanguageTargets>
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
 		<Reference Include="Mono.Android" />
-		<Reference Include="System" />
-		<Reference Include="System.Collections" />
-		<Reference Include="System.Threading.Tasks" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.Runtime" />
-		<Reference Include="System.Threading.Tasks" />
-		<Reference Include="System.IdentityModel" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Runtime.Serialization" />
-		<Reference Include="System.Xml" />        
-		<PackageReference Include="Xamarin.Build.Download" Version="0.4.8-beta1" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.4.9" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60' or '$(TargetFramework)' == 'MonoAndroid70'">
@@ -107,28 +84,36 @@
 
 	<!-- Workaround for dependencies for head projects -->
 	<Target Name="GetBuiltProjectOutputRecursive" Condition="'$(TargetFrameworkIdentifier)'=='Xamarin.iOS'"></Target>
-	
-  <ItemGroup>
-    <Compile Include="Additions\ExoplayerWrapper.cs" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <None Include="Transforms\EnumFields.xml" />
+
+	<ItemGroup>
+		<Compile Include="Additions\ExoplayerWrapper.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Transforms\EnumFields.xml" />
 		<None Include="Transforms\EnumMethods.xml" />
 		<None Include="Transforms\Metadata.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Jars\AboutJars.txt" />
-    <None Include="Additions\AboutAdditions.txt" />
-    <None Include="Jars\gmf.aar" />
-    <LibraryProjectZip Include="Jars\gmf.aar" />
-  </ItemGroup>
-  <ItemGroup>
-    <TransformFile Include="Transforms\Metadata.xml" />
-    <TransformFile Include="Transforms\EnumFields.xml" />
-    <TransformFile Include="Transforms\EnumMethods.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Jars\AboutJars.txt" />
+		<None Include="Additions\AboutAdditions.txt" />
+		<None Include="Jars\gmf.aar" />
+		<LibraryProjectZip Include="Jars\gmf.aar" />
+	</ItemGroup>
+	<ItemGroup>
+		<TransformFile Include="Transforms\Metadata.xml" />
+		<TransformFile Include="Transforms\EnumFields.xml" />
+		<TransformFile Include="Transforms\EnumMethods.xml" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="GitVersionTask" Version="4.0.0-beta0012">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
 </Project>

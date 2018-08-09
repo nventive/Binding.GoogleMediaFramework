@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>monoandroid60;monoandroid70;monoandroid71;monoandroid80;xamarinios10</TargetFrameworks>
+		<OutputPath>bin/$(Configuration)/$(TargetFramework)</OutputPath>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<PackageId>nventive.Binding.GoogleMediaFramework</PackageId>
+		<Title>Xamarin Binding for Google Media Framework</Title>
+		<Authors>nventive</Authors>
+		<Owners>nventive</Owners>
+		<PackageProjectUrl>https://github.com/nventive/Binding.GoogleMediaFramework</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/nventive/Binding.GoogleMediaFramework/blob/master/License.md</PackageLicenseUrl>
+		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/nv_small_square_logo.jpg</PackageIconUrl>
+		<Description>A Xamarin binding library for Google Media Framework (https://github.com/googleads/google-media-framework-android / https://github.com/googleads/google-media-framework-ios)</Description>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'monoandroid60'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'monoandroid70'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'monoandroid71'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'monoandroid80'">
+		<TargetFrameworkIdentifier>MonoAndroid</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
+		<TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
+		<TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+		<Reference Include="Mono.Android" />
+		<ProjectReference Include="..\GoogleMediaFramework.Android\GoogleMediaFramework.Android.csproj">
+			<PrivateAssets>All</PrivateAssets>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+		<Reference Include="Xamarin.iOS" />
+		<ProjectReference Include="..\GoogleMediaFramework.iOS\GoogleMediaFramework.iOS.csproj">
+			<PrivateAssets>All</PrivateAssets>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="GitVersionTask" Version="4.0.0-beta0012">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+	<Import Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'" Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+	<Import Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'" Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+
+	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
+		</ItemGroup>
+	</Target>
+
+</Project>
